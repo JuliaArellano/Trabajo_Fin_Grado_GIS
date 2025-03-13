@@ -1,0 +1,8 @@
+STENT
+Estructura del Stent
+•	Material Principal: El stent estará hecho de nitinol, una aleación con memoria de forma que permite su expansión controlada dentro de la arteria.
+•	Dimensiones:
+-	Diámetro expandido: 3.5 mm 
+-	Longitud: 8 - 30 mm (aproximadamente 20)
+-	Espesor del hilo: 0.1 mm diámetro
+-	Tamaño del paso : 10 mm
