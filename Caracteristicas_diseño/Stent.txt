@@ -6,3 +6,28 @@ Estructura del Stent
 -	Longitud: 8 - 30 mm (aproximadamente 20)
 -	Espesor del hilo: 0.1 mm diámetro
 -	Tamaño del paso : 10 mm
+Sensor 
+El sensor capacitivo se coloca en la superficie interna del stent para detectar cambios en la presión y la rigidez arterial.
+Estructura del sensor 
+•	Capas : 
+o	Capa inferior de Poliimida (PI) → Base dieléctrica. 5 - 10 μm
+-	Actúa como soporte del sensor.
+-	Debe ser flexible y biocompatible.
+
+o	Electrodos de Nanopartículas de Plata (AgNP) → Placas del sensor. 0.5 - 1 μm
+-	Son las pistas interdigitadas que detectan la presión.
+-	Cuanto más delgados, mayor flexibilidad.
+
+o	Encapsulación con PDMS (Silicona) → Protección del sensor y aislamiento eléctrico. 1- 5 μm 
+-	Protege contra fluidos y daños mecánicos.
+-	Puede ser muy fina sin afectar la detección.
+-	
+•	Estructura del sensor
+-	Espesor total del sensor: 16 μm.
+-	Tamaño : 1mm * 15 mm (70-80% stent) 
+
+•	Dimensiones de los electrodos interdigitados:
+
+-	Ancho de cada electrodo: 50 - 100 μm.
+-	Separación entre los electrodos: 50 - 100 μm.
+-	Número de pares de electrodos: 5 a 10 pares por mm.
