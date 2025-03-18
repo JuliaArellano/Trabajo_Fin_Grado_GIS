@@ -31,3 +31,7 @@ o	Encapsulación con PDMS (Silicona) → Protección del sensor y aislamiento el
 -	Ancho de cada electrodo: 50 - 100 μm.
 -	Separación entre los electrodos: 50 - 100 μm.
 -	Número de pares de electrodos: 5 a 10 pares por mm.
+MÉTODO DE COMUNICACIÓN
+Se va a utilizar dos bobinas emisoras que mediante inducción electromagnética van a captura la energía externa y van a trasmitir los datos a la bobina receptora.
+Sin baterías. Sin cables. 100% inalámbrico.
+
