@@ -34,4 +34,7 @@ o	Encapsulación con PDMS (Silicona) → Protección del sensor y aislamiento el
 MÉTODO DE COMUNICACIÓN
 Se va a utilizar dos bobinas emisoras que mediante inducción electromagnética van a captura la energía externa y van a trasmitir los datos a la bobina receptora.
 Sin baterías. Sin cables. 100% inalámbrico.
+•	Ubicación y Diseño de la Bobina
+o	Se va a colocar una en cada extremo .
+o	Se imprime directamente sobre el Nitinol y posteriormente se van a recubir Parylene C (0.5 - 2 μm) para proteger la bobina contra la degradación.
 
