@@ -37,4 +37,8 @@ Sin baterías. Sin cables. 100% inalámbrico.
 •	Ubicación y Diseño de la Bobina
 o	Se va a colocar una en cada extremo .
 o	Se imprime directamente sobre el Nitinol y posteriormente se van a recubir Parylene C (0.5 - 2 μm) para proteger la bobina contra la degradación.
+•	Dimensiones Típicas:
+-	Diámetro de la bobina: 0.25 mm
+-	Número de vueltas: 10 vueltas
+•	Espesor del material conductor (oro o plata): 1 μm
 
