@@ -48,4 +48,11 @@ o	Se imprime directamente sobre el Nitinol y posteriormente se van a recubir Par
 - La bobina del stent modula la señal de presión detectada y la retransmite a la bobina externa.
 	Solo ondas electromagnéticas.
 
+•	Frecuencia de Operación y Acoplamiento
+Frecuencia recomendada: 13.56 MHz (banda ISM, permitida para dispositivos médicos). Ya que : 
+
+-No es absorbida demasiado por los tejidos biológicos.
+-Permite buena transmisión de energía y datos.
+- Cumple con regulaciones médicas (ISM).
+
 
