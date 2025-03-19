@@ -41,4 +41,11 @@ o	Se imprime directamente sobre el Nitinol y posteriormente se van a recubir Par
 -	Diámetro de la bobina: 0.25 mm
 -	Número de vueltas: 10 vueltas
 •	Espesor del material conductor (oro o plata): 1 μm
+•	Cómo Funciona la Bobina en el Stent
+	- La bobina externa genera un campo electromagnético a 13.56 MHz.
+- La bobina impresa en el stent capta esa energía por inducción electromagnética.
+- La energía se convierte en corriente eléctrica que alimenta el sensor.
+- La bobina del stent modula la señal de presión detectada y la retransmite a la bobina externa.
+	Solo ondas electromagnéticas.
+
 
