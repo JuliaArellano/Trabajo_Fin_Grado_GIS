@@ -54,5 +54,8 @@ Frecuencia recomendada: 13.56 MHz (banda ISM, permitida para dispositivos médic
 -No es absorbida demasiado por los tejidos biológicos.
 -Permite buena transmisión de energía y datos.
 - Cumple con regulaciones médicas (ISM).
+CONEXIONES
+Pistas conductoras impresas, estas se imprimen pistas de oro/plata directamente sobre el stent. Por lo tanto, van a conectar la bobina con los electrodos interdigitados del sensor.
+
 
 
