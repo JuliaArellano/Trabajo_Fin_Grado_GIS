@@ -43,3 +43,6 @@ https://www.mdpi.com/1424-8220/19/21/4616#B9-sensors-19-04616
 https://academic.oup.com/eurheartj/article-abstract/35/12/765/623185
 https://link.springer.com/article/10.1007/s00330-003-2022-5#rightslink
 https://www.mdpi.com/1424-8220/24/16/5143
+https://doi.org/10.1111/j.1540-8183.2009.00483.x
+https://arxiv.org/abs/2005.00405
+https://doi.org/10.1109/BIOCAS.2018.8584824
