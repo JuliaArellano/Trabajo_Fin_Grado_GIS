@@ -1,1 +1,6 @@
 matplotlib
+pyvista
+streamlit.components.v1
+numpy
+plotly
+math
