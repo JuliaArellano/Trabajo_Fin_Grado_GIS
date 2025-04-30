@@ -90,4 +90,20 @@ for vista, icono in vistas.items():
     if st.sidebar.button(f"{icono} {vista}", key=vista):
         st.session_state.vista_activa = vista
 
+if st.session_state.vista_activa == "Inicio":
+    st.title("Visualización del Stent Inteligente")
+    
+    st.markdown(""" 
+    --- 
+    ### 🎯 Objetivo de la aplicación
+
+    En esta aplicación se podrá visualizar el resultado del **TFG del stent de Nitinol** y también algunas de las **aproximaciones matemáticas desarrolladas para evaluar su viabilidad**.
+
+    --- 
+    #### Funcionalidades incluidas:
+    - 🧊 Visualización 3D del stent.
+    - 🌡️ Simulación de la expansión térmica.
+    - 📡 Cálculo de la frecuencia de resonancia del circuito LC.
+    - 📉 Relación entre presión y frecuencia.
+""")
 
