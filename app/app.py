@@ -116,4 +116,5 @@ if st.session_state.vista_activa == "Inicio":
             <h3>🌡️ Expansión térmica</h3>
             <p>Simula la expansión con la temperatura.</p>
         </div>
+        """, unsafe_allow_html=True)
 
