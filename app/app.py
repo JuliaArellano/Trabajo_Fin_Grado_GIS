@@ -117,4 +117,11 @@ if st.session_state.vista_activa == "Inicio":
             <p>Simula la expansión con la temperatura.</p>
         </div>
         """, unsafe_allow_html=True)
+        st.markdown("""<br>
+        <div style="background-color:#e3f2fd ; padding: 20px; border-radius: 12px; text-align: center;">
+            <h3>🩸 Aproximación del perfil de velocidad del flujo sanguíneo </h3>
+            <p>Calcula la resonancia del circuito.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
 
