@@ -120,7 +120,7 @@ if st.session_state.vista_activa == "Inicio":
         st.markdown("""<br>
         <div style="background-color:#e3f2fd ; padding: 20px; border-radius: 12px; text-align: center;">
             <h3>🩸 Velocidad del flujo sanguíneo </h3>
-            <p>Calcula la velocidad , la caídade presión y FFR del flujo en el stent .</p>
+            <p>Calcula la velocidad , la caída de presión y FFR del flujo en el stent .</p>
         </div>
         """, unsafe_allow_html=True)
         
