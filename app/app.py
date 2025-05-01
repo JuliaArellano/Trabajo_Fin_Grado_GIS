@@ -92,18 +92,23 @@ for vista, icono in vistas.items():
 
 if st.session_state.vista_activa == "Inicio":
     st.title("Visualización del Stent Inteligente")
-    
-    st.markdown(""" 
-    --- 
-    ### 🎯 Objetivo de la aplicación
 
-    En esta aplicación se podrá visualizar el resultado del **TFG del stent de Nitinol** y también algunas de las **aproximaciones matemáticas desarrolladas para evaluar su viabilidad**.
+    st.markdown("""
+    <div style="background-color: #0d47a1; padding: 30px; border-radius: 15px; color: white; text-align: center;">
+        <h1>BIENVENIDO</h1>
+        <p style="font-size:20px;">Explora el proyecto del <b>Stent Inteligente de Nitinol</b> de manera interactiva.</p><br>
+    </div>
+    """, unsafe_allow_html=True)
+    st.markdown("   ")
 
-    --- 
-    #### Funcionalidades incluidas:
-    - 🧊 Visualización 3D del stent.
-    - 🌡️ Simulación de la expansión térmica.
-    - 📡 Cálculo de la frecuencia de resonancia del circuito LC.
-    - 📉 Relación entre presión y frecuencia.
-""")
+    st.markdown(" ### Funcionalidades principales:")
+
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown("""
+        <div style="background-color:#f1f8e9; padding: 20px; border-radius:12px; text-align:center;">
+            <h3>🧊 Vista 3D</h3>
+            <p>Explora el modelo 3D del stent.</p>
+        </div>
+        """, unsafe_allow_html=True)
 
