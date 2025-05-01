@@ -111,4 +111,9 @@ if st.session_state.vista_activa == "Inicio":
             <p>Explora el modelo 3D del stent.</p>
         </div>
         """, unsafe_allow_html=True)
+                st.markdown("""<br>
+        <div style="background-color:#fce4ec; padding: 20px; border-radius: 12px; text-align: center;">
+            <h3>🌡️ Expansión térmica</h3>
+            <p>Simula la expansión con la temperatura.</p>
+        </div>
 
