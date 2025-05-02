@@ -157,10 +157,10 @@ elif st.session_state.vista_activa == "Vista 3D del Stent":
     st.markdown("Puedes subir uno o más archivos STL del stent para visualizar su estructura.")
     # Subir archivo STL
     uploaded_file = st.file_uploader("Sube un archivo STL", type=["stl"])
-
+    
     if uploaded_file:
-        # Cargar el archivo STL usando Trimesh
-        mesh = trimesh.load(uploaded_file)
+        # Cargar el archivo STL usando Trimesh, asegurándonos de pasar 'file_type'
+        mesh = trimesh.load(uploaded_file, file_type='stl')
         
         # Extraer vértices y caras de la malla
         vertices = mesh.vertices
