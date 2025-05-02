@@ -182,9 +182,11 @@ elif st.session_state.vista_activa == "Vista 3D del Stent":
                 i=faces[:, 0],
                 j=faces[:, 1],
                 k=faces[:, 2],
-                color='#C0C0C0',
-                opacity=1,
+                color='#D3D3D3',  # Gris claro tipo acero
+                opacity=1.0,
                 flatshading=True,
+                lighting=dict(ambient=0.3, diffuse=0.7, specular=1.0, roughness=0.4, fresnel=0.2),
+                lightposition=dict(x=100, y=200, z=0)
             )
         ])
     
