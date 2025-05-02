@@ -89,7 +89,35 @@ for vista, icono in vistas.items():
         clase += " selected"
     if st.sidebar.button(f"{icono} {vista}", key=vista):
         st.session_state.vista_activa = vista
+def cargar_visualizar_stl(uploaded_files):
+    for archivo in uploaded_files:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".stl") as tmp_file:
+            tmp_file.write(archivo.read())
+            tmp_file.flush()
+            mesh = pv.read(tmp_file.name)
 
+            if mesh.n_points == 0:
+                st.warning(f"El archivo {archivo.name} está vacío o no se pudo cargar.")
+                continue
+
+            st.subheader(f"Modelo: {archivo.name}")
+            
+            # Crear el plotter interactivo de PyVista
+            plotter = pv.Plotter(off_screen=False, window_size=[500, 500])
+            plotter.add_mesh(mesh, color="lightblue")
+            plotter.add_axes()
+            plotter.set_background("white")
+
+            # Generar el archivo HTML de la visualización interactiva
+            html_file = tmp_file.name + ".html"
+            plotter.export_html(html_file)
+
+            # Mostrar la visualización interactiva en Streamlit
+            with open(html_file, "r") as f:
+                st.components.v1.html(f.read(), height=600)
+
+            # Eliminar el archivo HTML temporal
+            os.remove(html_file)
 if st.session_state.vista_activa == "Inicio":
     st.title("Visualización del Stent Inteligente")
 
@@ -123,5 +151,16 @@ if st.session_state.vista_activa == "Inicio":
             <p>Calcula la velocidad , la caída de presión y FFR del flujo en el stent .</p>
         </div>
         """, unsafe_allow_html=True)
+elif st.session_state.vista_activa == "Vista 3D del Stent":
+    st.title("🧊 Vista 3D del Stent")
+    st.markdown("Puedes subir uno o más archivos STL del stent para visualizar su estructura.")
+    uploaded_files = st.file_uploader("Sube uno o más archivos STL", type=["stl"], accept_multiple_files=True)
+    if uploaded_files:
+        cargar_visualizar_stl(uploaded_files)
+
+elif st.session_state.vista_activa == "Expansión térmica":
+    st.title("🌡️ Aproximación matemática de la expansión térmica del Nitinol")
+    st.markdown("""
+<div style='background-color: #f9f9f9; padding: 20px; border-radius: 10px;'>
         
 
