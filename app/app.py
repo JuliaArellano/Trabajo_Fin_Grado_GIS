@@ -95,8 +95,10 @@ for vista, icono in vistas.items():
         
 # Funciones utilizadas 
 def cargar_modelo_predeterminado():
-    modelo_1 = "stent_final.stl"
-    modelo_2 = "Sensor_completo.stl"
+    base_path = os.path.dirname(os.path.abspath(__file__))  # Ruta de app.py
+    # Los archivos están en la misma carpeta, así que directamente los nombramos
+    modelo_1 = os.path.join(base_path, "stent_final.stl")
+    modelo_2 = os.path.join(base_path, "Sensor_completo.stl")
 
     return [modelo_1, modelo_2]
 def cargar_y_procesar_stl(uploaded_file):
