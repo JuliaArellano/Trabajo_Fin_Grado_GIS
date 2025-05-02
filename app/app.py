@@ -160,20 +160,36 @@ elif st.session_state.vista_activa == "Vista 3D del Stent":
     # Subir archivo STL
 
     
-    uploaded_file = st.file_uploader("Sube un archivo STL", type=["stl"])
+    import streamlit as st
+import plotly.graph_objects as go
+import trimesh
+import tempfile
 
-    if uploaded_file:
-        # Guardar el archivo temporalmente
+st.set_page_config(layout="wide")
+st.title("Visualizador 3D de modelos STL (estilo acero inoxidable)")
+
+    def cargar_y_procesar_stl(uploaded_file):
         with tempfile.NamedTemporaryFile(delete=False, suffix=".stl") as tmp:
             tmp.write(uploaded_file.read())
             tmp.flush()
-            mesh = trimesh.load(tmp.name)  # Cargar STL desde el archivo
+            mesh = trimesh.load(tmp.name)
     
-        # Obtener vértices y caras
+        # Intentar rotar el modelo si viene mal orientado
+        try:
+            mesh.apply_transform(trimesh.transformations.rotation_matrix(
+                angle=3.14 / 2,  # 90 grados
+                direction=[1, 0, 0],  # rotación sobre eje X
+                point=mesh.centroid
+            ))
+        except Exception as e:
+            st.warning(f"No se pudo rotar el modelo {uploaded_file.name}: {e}")
+    
+        return mesh
+    
+    def mostrar_modelo_stl(nombre_archivo, mesh):
         vertices = mesh.vertices
         faces = mesh.faces
     
-        # Crear figura 3D con Plotly
         fig = go.Figure(data=[
             go.Mesh3d(
                 x=vertices[:, 0],
@@ -182,17 +198,22 @@ elif st.session_state.vista_activa == "Vista 3D del Stent":
                 i=faces[:, 0],
                 j=faces[:, 1],
                 k=faces[:, 2],
-                color='#D3D3D3',  # Gris claro tipo acero
+                color='#B0B0B0',  # Gris metálico
                 opacity=1.0,
                 flatshading=True,
-                lighting=dict(ambient=0.3, diffuse=0.7, specular=1.0, roughness=0.4, fresnel=0.2),
+                lighting=dict(
+                    ambient=0.5,
+                    diffuse=0.5,
+                    specular=0.2,
+                    roughness=0.9,
+                    fresnel=0.0
+                ),
                 lightposition=dict(x=100, y=200, z=0)
             )
         ])
     
-        # Estética: sin ejes ni líneas extras
         fig.update_layout(
-            title=f"Modelo: {uploaded_file.name}",
+            title=f"Modelo: {nombre_archivo}",
             scene=dict(
                 aspectmode='data',
                 xaxis=dict(visible=False),
@@ -203,7 +224,17 @@ elif st.session_state.vista_activa == "Vista 3D del Stent":
             height=700
         )
     
+        st.subheader(nombre_archivo)
         st.plotly_chart(fig, use_container_width=True)
+    
+    
+    uploaded_files = st.file_uploader("Sube uno o varios archivos STL", type=["stl"], accept_multiple_files=True)
+    
+    if uploaded_files:
+        for uploaded_file in uploaded_files:
+            mesh = cargar_y_procesar_stl(uploaded_file)
+            mostrar_modelo_stl(uploaded_file.name, mesh)
+
 
         
 
