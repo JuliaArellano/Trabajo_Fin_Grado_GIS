@@ -159,14 +159,6 @@ elif st.session_state.vista_activa == "Vista 3D del Stent":
     st.markdown("Puedes subir uno o más archivos STL del stent para visualizar su estructura.")
     # Subir archivo STL
 
-    
-    import streamlit as st
-import plotly.graph_objects as go
-import trimesh
-import tempfile
-
-st.set_page_config(layout="wide")
-st.title("Visualizador 3D de modelos STL (estilo acero inoxidable)")
 
     def cargar_y_procesar_stl(uploaded_file):
         with tempfile.NamedTemporaryFile(delete=False, suffix=".stl") as tmp:
