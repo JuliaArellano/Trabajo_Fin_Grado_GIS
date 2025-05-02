@@ -196,10 +196,9 @@ elif st.session_state.vista_activa == "Vista 3D del Stent":
         # Si no se suben archivos, mostrar los modelos por defecto
         modelos_predeterminados = cargar_modelo_predeterminado()
         for modelo in modelos_predeterminados:
-            # Suponiendo que los modelos están en rutas válidas
-            with open(modelo, "rb") as file:
-                mesh = cargar_y_procesar_stl(file)
-                mostrar_modelo_stl(modelo.name, mesh)
+            mesh = trimesh.load(modelo)
+            mostrar_modelo_stl(os.path.basename(modelo), mesh)
+               	
 
 
 
