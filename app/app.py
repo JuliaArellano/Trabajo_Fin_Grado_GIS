@@ -149,6 +149,29 @@ def mostrar_modelo_stl(nombre_archivo, mesh):
         )
         st.plotly_chart(fig, use_container_width=True)
     
+    # Función de expansión
+    def expansion(tipo, T_min, T_max, D_inicial, As, Af, alpha_m, alpha_a):
+        T = np.linspace(T_min, T_max, 500)
+        D = np.zeros_like(T)
+        for i, temp in enumerate(T):
+            if temp < As:
+                delta_T = temp - T_min
+                D[i] = D_inicial * (1 + alpha_m * delta_T)
+            elif As <= temp <= Af:
+                f = (temp - As) / (Af - As)
+                fraccion_transformada = 0.5 * (1 - np.cos(np.pi * f))
+                delta_T1 = As - T_min
+                delta_T2 = temp - As
+                expansion_termica = (1 + alpha_m * delta_T1) * (1 + alpha_a * delta_T2)
+                D[i] = D_inicial * expansion_termica * (1 + fraccion_transformada)
+            else:
+                delta_T1 = As - T_min
+                delta_T2 = temp - As
+                expansion_termica = (1 + alpha_m * delta_T1) * (1 + alpha_a * delta_T2)
+                fraccion_transformada = 1
+                D[i] = D_inicial * expansion_termica * (1 + fraccion_transformada)
+
+        return T, D
 if st.session_state.vista_activa == "Inicio":
     st.title("Visualización del Stent Inteligente")
 
@@ -201,7 +224,57 @@ elif st.session_state.vista_activa == "Vista 3D del Stent":
             mesh = trimesh.load(modelo)
             mostrar_modelo_stl(os.path.basename(modelo), mesh)
                	
+elif st.session_state.vista_activa == "Expansión térmica":
+    st.title("🌡️ Aproximación matemática de la expansión térmica del Nitinol")
+    st.markdown("""
+<div style='background-color: #f9f9f9; padding: 20px; border-radius: 10px;'>
 
+<p>La expansión térmica del Nitinol se ha modelado utilizando una aproximación matemática sencilla, 
+en la que se establece un comportamiento lineal para las fases de <b>martensita</b> (a bajas temperaturas) 
+y <b>austenita</b> (a temperaturas más elevadas), con un cambio de fase suave representado por una ecuación tipo coseno.  
+Este modelo estima el cambio de tamaño del material en función de la temperatura.</p>
+
+<p>Durante la transición entre las fases, se aplica un coeficiente de expansión térmica:</p>
+
+<ul>
+<li>Para la martensita: <b>αₘ = 6.6 × 10⁻⁶ 1/°C</b></li>
+<li>Para la austenita: <b>αₐ = 11.0 × 10⁻⁶ 1/°C</b></li>
+</ul>
+
+</div>
+""", unsafe_allow_html=True)
+    
+    st.markdown("---")  # Separador visual
+
+    # Interfaz Streamlit
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.subheader("Parámetros de Entrada")
+        tipo = st.selectbox("Tipo de medida", ["diámetro", "longitud"])
+        D_inicial = st.number_input("Valor inicial (mm)", value=1.8 if tipo == "diámetro" else 10.4)
+        T_min = st.slider("Temperatura mínima (°C)", 0, 37, 18)
+        T_max = st.slider("Temperatura máxima (°C)", 37, 80, 50)
+        As = st.number_input("As (°C)", value=24.000)
+        Af = st.number_input("Af (°C)", value=40.000)
+
+    with col2:
+        st.subheader("Resultado de la Expansión")
+        T, D = expansion(tipo, T_min, T_max, D_inicial, As, Af, 6.6e-6, 11e-6)
+
+        # Color por tipo
+        color_linea = 'blue' if tipo == "diámetro" else 'green'
+
+        fig, ax = plt.subplots(figsize=(9, 5))
+        ax.plot(T, D, label=f'{tipo.capitalize()} inicial = {D_inicial} mm', color=color_linea)
+        ax.axvline(37, color='red', linestyle='--', label=f'37°C = {D[np.abs(T - 37).argmin()]:.4f} mm')
+        ax.axvspan(As, Af, color='gray', alpha=0.2, label='Rango de transición')
+        ax.set_title(f'Expansión del stent de Nitinol - {tipo.capitalize()}')
+        ax.set_xlabel('Temperatura (°C)')
+        ax.set_ylabel(f'{tipo.capitalize()} (mm)')
+        ax.grid(True)
+        ax.legend()
+        st.pyplot(fig)
 
 
 
