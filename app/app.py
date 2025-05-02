@@ -182,8 +182,8 @@ elif st.session_state.vista_activa == "Vista 3D del Stent":
                 i=faces[:, 0],
                 j=faces[:, 1],
                 k=faces[:, 2],
-                color='lightblue',
-                opacity=0.9,
+                color='#C0C0C0',
+                opacity=1,
                 flatshading=True,
             )
         ])
