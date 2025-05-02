@@ -159,17 +159,21 @@ elif st.session_state.vista_activa == "Vista 3D del Stent":
     st.markdown("Puedes subir uno o más archivos STL del stent para visualizar su estructura.")
     # Subir archivo STL
 
-    uploaded_file = st.file_uploader("Sube un archivo STL", type=["stl"])
     
+    uploaded_file = st.file_uploader("Sube un archivo STL", type=["stl"])
+
     if uploaded_file:
-        # Cargar el archivo STL usando Trimesh
-        mesh = trimesh.load(uploaded_file)
-        
-        # Extraer vértices y caras de la malla
+        # Guardar el archivo temporalmente
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".stl") as tmp:
+            tmp.write(uploaded_file.read())
+            tmp.flush()
+            mesh = trimesh.load(tmp.name)  # Cargar STL desde el archivo
+    
+        # Obtener vértices y caras
         vertices = mesh.vertices
         faces = mesh.faces
-        
-        # Crear la visualización 3D con Plotly
+    
+        # Crear figura 3D con Plotly
         fig = go.Figure(data=[
             go.Mesh3d(
                 x=vertices[:, 0],
@@ -178,33 +182,26 @@ elif st.session_state.vista_activa == "Vista 3D del Stent":
                 i=faces[:, 0],
                 j=faces[:, 1],
                 k=faces[:, 2],
-                opacity=0.8,  # Opacidad de la malla
-                color='lightblue',  # Color de la malla
-                flatshading=True  # Sombreado plano para mejorar la visualización
+                color='lightblue',
+                opacity=0.9,
+                flatshading=True,
             )
         ])
-        
-        # Mejorar la apariencia de la visualización
+    
+        # Estética: sin ejes ni líneas extras
         fig.update_layout(
+            title=f"Modelo: {uploaded_file.name}",
             scene=dict(
                 aspectmode='data',
-                xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
-                yaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
-                zaxis=dict(showgrid=False, zeroline=False, showticklabels=False)
+                xaxis=dict(visible=False),
+                yaxis=dict(visible=False),
+                zaxis=dict(visible=False)
             ),
-            title="Modelo 3D",
-            showlegend=False,
-            autosize=True
+            margin=dict(l=0, r=0, t=30, b=0),
+            height=700
         )
-        
-        # Ajustar la vista para que el modelo se vea en el centro y con una escala apropiada
-        fig.update_layout(scene_camera=dict(
-            eye=dict(x=1.25, y=1.25, z=1.25)  # Ajuste la cámara para ver el modelo en su mejor ángulo
-        ))
     
-        # Cambiar el tamaño de la visualización en Streamlit
         st.plotly_chart(fig, use_container_width=True)
-
 
         
 
