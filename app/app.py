@@ -191,7 +191,7 @@ elif st.session_state.vista_activa == "Vista 3D del Stent":
         for uploaded_file in uploaded_files:
             # Cargar y procesar cada archivo STL
             mesh = cargar_y_procesar_stl(uploaded_file)
-            mostrar_modelo_stl(mesh)
+            mostrar_modelo_stl(uploaded_file.name, mesh)
     else:
         # Si no se suben archivos, mostrar los modelos por defecto
         modelos_predeterminados = cargar_modelo_predeterminado()
@@ -199,7 +199,7 @@ elif st.session_state.vista_activa == "Vista 3D del Stent":
             # Suponiendo que los modelos están en rutas válidas
             with open(modelo, "rb") as file:
                 mesh = cargar_y_procesar_stl(file)
-                mostrar_modelo_stl(mesh)
+                mostrar_modelo_stl(modelo.name, mesh)
 
 
 
