@@ -8,6 +8,7 @@ from streamlit.components.v1 import html
 import tempfile
 import os
 import math
+import trimesh
 import plotly.graph_objects as go
 # Configuración general
 st.set_page_config(page_title="Visualización del Stent Inteligente", layout="wide")
@@ -154,9 +155,35 @@ if st.session_state.vista_activa == "Inicio":
 elif st.session_state.vista_activa == "Vista 3D del Stent":
     st.title("🧊 Vista 3D del Stent")
     st.markdown("Puedes subir uno o más archivos STL del stent para visualizar su estructura.")
-    uploaded_files = st.file_uploader("Sube uno o más archivos STL", type=["stl"], accept_multiple_files=True)
-    if uploaded_files:
-        cargar_visualizar_stl(uploaded_files)
+    # Subir archivo STL
+    uploaded_file = st.file_uploader("Sube un archivo STL", type=["stl"])
+
+    if uploaded_file:
+        # Cargar el archivo STL usando Trimesh
+        mesh = trimesh.load(uploaded_file)
+        
+        # Extraer vértices y caras de la malla
+        vertices = mesh.vertices
+        faces = mesh.faces
+        
+        # Crear la visualización 3D con Plotly
+        fig = go.Figure(data=[
+            go.Mesh3d(
+                x=vertices[:, 0],
+                y=vertices[:, 1],
+                z=vertices[:, 2],
+                i=faces[:, 0],
+                j=faces[:, 1],
+                k=faces[:, 2],
+                opacity=1.0,
+                color='lightblue'
+            )
+        ])
+    
+        fig.update_layout(scene=dict(aspectmode='data'))
+    
+        # Mostrar el gráfico en Streamlit
+        st.plotly_chart(fig, use_container_width=True)
 
         
 
