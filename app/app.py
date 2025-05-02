@@ -150,28 +150,28 @@ def mostrar_modelo_stl(nombre_archivo, mesh):
         st.plotly_chart(fig, use_container_width=True)
     
     # Función de expansión
-    def expansion(tipo, T_min, T_max, D_inicial, As, Af, alpha_m, alpha_a):
-        T = np.linspace(T_min, T_max, 500)
-        D = np.zeros_like(T)
-        for i, temp in enumerate(T):
-            if temp < As:
-                delta_T = temp - T_min
-                D[i] = D_inicial * (1 + alpha_m * delta_T)
-            elif As <= temp <= Af:
-                f = (temp - As) / (Af - As)
-                fraccion_transformada = 0.5 * (1 - np.cos(np.pi * f))
-                delta_T1 = As - T_min
-                delta_T2 = temp - As
-                expansion_termica = (1 + alpha_m * delta_T1) * (1 + alpha_a * delta_T2)
-                D[i] = D_inicial * expansion_termica * (1 + fraccion_transformada)
-            else:
-                delta_T1 = As - T_min
-                delta_T2 = temp - As
-                expansion_termica = (1 + alpha_m * delta_T1) * (1 + alpha_a * delta_T2)
-                fraccion_transformada = 1
-                D[i] = D_inicial * expansion_termica * (1 + fraccion_transformada)
+def expansion(tipo, T_min, T_max, D_inicial, As, Af, alpha_m, alpha_a): 
+    T = np.linspace(T_min, T_max, 500)
+    D = np.zeros_like(T)
+    for i, temp in enumerate(T):
+        if temp < As:
+            delta_T = temp - T_min
+            D[i] = D_inicial * (1 + alpha_m * delta_T)
+        elif As <= temp <= Af:
+            f = (temp - As) / (Af - As)
+            fraccion_transformada = 0.5 * (1 - np.cos(np.pi * f))
+            delta_T1 = As - T_min
+            delta_T2 = temp - As
+            expansion_termica = (1 + alpha_m * delta_T1) * (1 + alpha_a * delta_T2)
+            D[i] = D_inicial * expansion_termica * (1 + fraccion_transformada)
+        else:
+            delta_T1 = As - T_min
+            delta_T2 = temp - As
+            expansion_termica = (1 + alpha_m * delta_T1) * (1 + alpha_a * delta_T2)
+            fraccion_transformada = 1
+            D[i] = D_inicial * expansion_termica * (1 + fraccion_transformada)
 
-        return T, D
+    return T, D
 if st.session_state.vista_activa == "Inicio":
     st.title("Visualización del Stent Inteligente")
 
