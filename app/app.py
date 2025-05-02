@@ -165,16 +165,6 @@ elif st.session_state.vista_activa == "Vista 3D del Stent":
             tmp.flush()
             mesh = trimesh.load(tmp.name)
     
-        # Intentar rotar el modelo si viene mal orientado
-        try:
-            mesh.apply_transform(trimesh.transformations.rotation_matrix(
-                angle=3.14 / 2,  # 90 grados
-                direction=[1, 0, 0],  # rotación sobre eje X
-                point=mesh.centroid
-            ))
-        except Exception as e:
-            st.warning(f"No se pudo rotar el modelo {uploaded_file.name}: {e}")
-    
         return mesh
     
     def mostrar_modelo_stl(nombre_archivo, mesh):
@@ -203,14 +193,15 @@ elif st.session_state.vista_activa == "Vista 3D del Stent":
             )
         ])
     
+        # Actualizar el layout para permitir interacción con la cámara, pero ocultar los ejes
         fig.update_layout(
             title=f"Modelo: {nombre_archivo}",
             scene=dict(
-                aspectmode='data',  # Permite mantener la proporción correcta
-                xaxis=dict(visible=True),
-                yaxis=dict(visible=True),
-                zaxis=dict(visible=True),
-                camera=dict(eye=dict(x=2, y=2, z=2))  # Posición inicial de la cámara
+                aspectmode='data',
+                xaxis=dict(visible=False),  # Ejes ocultos
+                yaxis=dict(visible=False),  # Ejes ocultos
+                zaxis=dict(visible=False),  # Ejes ocultos
+                camera=dict(eye=dict(x=2, y=2, z=2))  # Inicia la cámara en una buena posición para rotar
             ),
             margin=dict(l=0, r=0, t=30, b=0),
             height=700
@@ -226,6 +217,7 @@ elif st.session_state.vista_activa == "Vista 3D del Stent":
         for uploaded_file in uploaded_files:
             mesh = cargar_y_procesar_stl(uploaded_file)
             mostrar_modelo_stl(uploaded_file.name, mesh)
+
 
 
 
