@@ -159,7 +159,6 @@ elif st.session_state.vista_activa == "Vista 3D del Stent":
     st.markdown("Puedes subir uno o más archivos STL del stent para visualizar su estructura.")
     # Subir archivo STL
 
-
     def cargar_y_procesar_stl(uploaded_file):
         with tempfile.NamedTemporaryFile(delete=False, suffix=".stl") as tmp:
             tmp.write(uploaded_file.read())
@@ -207,10 +206,11 @@ elif st.session_state.vista_activa == "Vista 3D del Stent":
         fig.update_layout(
             title=f"Modelo: {nombre_archivo}",
             scene=dict(
-                aspectmode='data',
-                xaxis=dict(visible=False),
-                yaxis=dict(visible=False),
-                zaxis=dict(visible=False)
+                aspectmode='data',  # Permite mantener la proporción correcta
+                xaxis=dict(visible=True),
+                yaxis=dict(visible=True),
+                zaxis=dict(visible=True),
+                camera=dict(eye=dict(x=2, y=2, z=2))  # Posición inicial de la cámara
             ),
             margin=dict(l=0, r=0, t=30, b=0),
             height=700
@@ -226,6 +226,7 @@ elif st.session_state.vista_activa == "Vista 3D del Stent":
         for uploaded_file in uploaded_files:
             mesh = cargar_y_procesar_stl(uploaded_file)
             mostrar_modelo_stl(uploaded_file.name, mesh)
+
 
 
         
