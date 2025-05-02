@@ -3,3 +3,4 @@ pyvista
 streamlit
 numpy
 plotly
+vtk
