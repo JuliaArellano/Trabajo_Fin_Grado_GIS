@@ -159,36 +159,52 @@ elif st.session_state.vista_activa == "Vista 3D del Stent":
     st.title("🧊 Vista 3D del Stent")
     st.markdown("Puedes subir uno o más archivos STL del stent para visualizar su estructura.")
     # Subir archivo STL
+
     uploaded_file = st.file_uploader("Sube un archivo STL", type=["stl"])
     
     if uploaded_file:
         # Cargar el archivo STL usando Trimesh
         mesh = trimesh.load(uploaded_file)
         
-        # Convertir a formato para Pythreejs
+        # Extraer vértices y caras de la malla
         vertices = mesh.vertices
         faces = mesh.faces
         
-        # Crear la geometría
-        geometry = BufferGeometry(attributes={
-            'position': Float32BufferAttribute(vertices.flatten(), 3)
-        })
+        # Crear la visualización 3D con Plotly
+        fig = go.Figure(data=[
+            go.Mesh3d(
+                x=vertices[:, 0],
+                y=vertices[:, 1],
+                z=vertices[:, 2],
+                i=faces[:, 0],
+                j=faces[:, 1],
+                k=faces[:, 2],
+                opacity=0.8,  # Opacidad de la malla
+                color='lightblue',  # Color de la malla
+                flatshading=True  # Sombreado plano para mejorar la visualización
+            )
+        ])
         
-        # Crear el material
-        material = MeshBasicMaterial(color='lightblue', wireframe=True)
+        # Mejorar la apariencia de la visualización
+        fig.update_layout(
+            scene=dict(
+                aspectmode='data',
+                xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+                yaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+                zaxis=dict(showgrid=False, zeroline=False, showticklabels=False)
+            ),
+            title="Modelo 3D",
+            showlegend=False,
+            autosize=True
+        )
         
-        # Crear la malla
-        mesh3d = Mesh(geometry=geometry, material=material)
-        
-        # Configurar la escena
-        camera = PerspectiveCamera(90, 1, 0.1, 1000)
-        camera.position = [0, 0, 5]
-        
-        scene = Scene(children=[mesh3d, camera])
-        renderer = WebGLRenderer(scene=scene, camera=camera)
-        
-        # Mostrar en Streamlit
-        st.pydeck_chart(renderer)
+        # Ajustar la vista para que el modelo se vea en el centro y con una escala apropiada
+        fig.update_layout(scene_camera=dict(
+            eye=dict(x=1.25, y=1.25, z=1.25)  # Ajuste la cámara para ver el modelo en su mejor ángulo
+        ))
+    
+        # Cambiar el tamaño de la visualización en Streamlit
+        st.plotly_chart(fig, use_container_width=True)
 
 
         
