@@ -11,7 +11,6 @@ import math
 import trimesh
 import plotly.graph_objects as go
 import pythreejs as three
-from pythreejs import PerspectiveCamera, Scene, WebGLRenderer, Mesh, MeshBasicMaterial, BufferGeometry, Float32BufferAttribute
 
 # Configuración general
 st.set_page_config(page_title="Visualización del Stent Inteligente", layout="wide")
