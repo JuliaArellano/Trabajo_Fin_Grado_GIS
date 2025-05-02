@@ -158,9 +158,5 @@ elif st.session_state.vista_activa == "Vista 3D del Stent":
     if uploaded_files:
         cargar_visualizar_stl(uploaded_files)
 
-elif st.session_state.vista_activa == "Expansión térmica":
-    st.title("🌡️ Aproximación matemática de la expansión térmica del Nitinol")
-    st.markdown("""
-<div style='background-color: #f9f9f9; padding: 20px; border-radius: 10px;'>
         
 
