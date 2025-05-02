@@ -94,6 +94,11 @@ for vista, icono in vistas.items():
         st.session_state.vista_activa = vista
         
 # Funciones utilizadas 
+def cargar_modelo_predeterminado():
+    modelo_1 = "stent_final.stl"
+    modelo_2 = "Sensor_completo.stl"
+
+    return [modelo_1, modelo_2]
 def cargar_y_procesar_stl(uploaded_file):
     with tempfile.NamedTemporaryFile(delete=False, suffix=".stl") as tmp:
         tmp.write(uploaded_file.read())
@@ -182,9 +187,19 @@ elif st.session_state.vista_activa == "Vista 3D del Stent":
     uploaded_files = st.file_uploader("Sube uno o varios archivos STL", type=["stl"], accept_multiple_files=True)
     
     if uploaded_files:
+        # Si se suben archivos, mostrar solo esos archivos
         for uploaded_file in uploaded_files:
+            # Cargar y procesar cada archivo STL
             mesh = cargar_y_procesar_stl(uploaded_file)
-            mostrar_modelo_stl(uploaded_file.name, mesh)
+            mostrar_modelo_stl(mesh)
+    else:
+        # Si no se suben archivos, mostrar los modelos por defecto
+        modelos_predeterminados = cargar_modelo_predeterminado()
+        for modelo in modelos_predeterminados:
+            # Suponiendo que los modelos están en rutas válidas
+            with open(modelo, "rb") as file:
+                mesh = cargar_y_procesar_stl(file)
+                mostrar_modelo_stl(mesh)
 
 
 
