@@ -3,4 +3,4 @@ pyvista
 streamlit
 numpy
 plotly
-vtk
+trimesh
