@@ -383,5 +383,46 @@ elif st.session_state.vista_activa == "Velocidad del flujo sanguíneo":
         plt.gca().invert_yaxis()  # Invertir eje Y para que el centro esté arriba
         st.pyplot(plt)
 
+    st.subheader("Evaluación de la estenosis en el stent")
+    def evaluar_estenosis(Q_reposo, Q_actividad, R_stent_original, L, mu, P_entrada):
+        reducciones = [1.0, 0.75, 0.50, 0.3]  # 100%, 75%, 50% del radio original
+        colores = ['blue', 'orange', 'red',"purple"]
+        etiquetas = ['Sin oculusión ', '25% de oclusión', '50% de oclusión',"75% de oclusión"]
         
+        estados = [('Reposo', Q_reposo), ('Actividad', Q_actividad)]
+        
+        fig, axs = plt.subplots(1, 2, figsize=(16, 6), sharey=True)
+        
+        for idx, (estado, Q) in enumerate(estados):
+            ax = axs[idx]
+            for i, factor in enumerate(reducciones):
+                R = R_stent_original * factor
+                delta_P = (8 * mu * L * Q) / (np.pi * R**4)
+                v_prom = Q / (np.pi * R**2)
+                P_salida = P_entrada - delta_P
+                ffr = max(P_salida / P_entrada, 0)
+    
+                total_points = 100
+                r = np.linspace(0, R, total_points)
+                v = (1 / (4 * mu)) * (-delta_P / L) * (R**2 - r**2)
+                v = np.abs(v)
+    
+                ax.plot(v, r * 1000, color=colores[i], label=f"{etiquetas[i]} - FFR: {ffr:.2f}")
+    
+            ax.set_title(f"{estado}")
+            ax.set_xlabel('Velocidad (m/s)')
+            ax.grid(True)
+            ax.legend()
+            ax.invert_yaxis()
+    
+        axs[0].set_ylabel('Radio (mm)')
+        fig.suptitle('Impacto de la Estenosis en el Perfil de Velocidad y FFR o iFR (Reposo vs Actividad)', fontsize=14)
+        plt.tight_layout()
+        plt.show()
+        
+    Q_rep = 3.34e-6 # Flujo sanguíneo rep (m^3/s)
+    Q_act = 16.67e-6# Flujo sanguíneo act (m^3/s)
+    
+    # Ejecutar la simulación
+    evaluar_estenosis(Q_rep,Q_act, R_stent, L, mu, P_entrada)
 
