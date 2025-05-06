@@ -418,7 +418,7 @@ elif st.session_state.vista_activa == "Velocidad del flujo sanguíneo":
         axs[0].set_ylabel('Radio (mm)')
         fig.suptitle('Impacto de la Estenosis en el Perfil de Velocidad y FFR o iFR (Reposo vs Actividad)', fontsize=14)
         plt.tight_layout()
-        plt.show()
+        st.pyplot(fig)
         
     Q_rep = 3.34e-6 # Flujo sanguíneo rep (m^3/s)
     Q_act = 16.67e-6# Flujo sanguíneo act (m^3/s)
