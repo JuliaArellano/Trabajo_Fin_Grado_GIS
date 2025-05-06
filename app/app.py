@@ -338,9 +338,9 @@ elif st.session_state.vista_activa == "Velocidad del flujo sanguíneo":
         Q_input = st.text_input("Flujo sanguíneo (m³/s)", value="3.34e-6" if tipo == "En reposo" else "16.67e-6")
         Q = float(Q_input)
         L = st.number_input("Longitud del stent (m)", value=0.020)
-        R_stent_input = st.text_input("Radio del stent (m)", value=1.775e-3)
+        R_stent_input = st.text_input("Radio del stent (m)", value="1.775e-3")
         R_stent = float(R_stent_input)
-        mu_input = st.text_input("Viscosidad de la sangre (Pa·s)", value=3.5e-3)
+        mu_input = st.text_input("Viscosidad de la sangre (Pa·s)", value="3.5e-3")
         mu = float(mu_input)
         P_entrada = st.number_input("Presión de la sangre (Pa)", value= 13332)
 
