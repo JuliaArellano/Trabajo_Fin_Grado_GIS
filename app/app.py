@@ -323,7 +323,7 @@ elif st.session_state.vista_activa == "Velocidad del flujo sanguíneo":
     st.markdown("""
     <div style='background-color: #f9f9f9; padding: 20px; border-radius: 10px;'>
     <p>Este modelo analiza el flujo sanguíneo a través de un stent.  Se ha utilizado la ley de Poiseuille, para calcular 
-    la caída de presión, la velocidad promedio y el perfil de velocidad en función del flujo sanguíneo y el FFR.</p>
+    la caída de presión, la velocidad promedio y el perfil de velocidad en función del flujo sanguíneo y el FFR o iFR.</p>
     </div>
     """, unsafe_allow_html=True)
     
@@ -355,7 +355,7 @@ elif st.session_state.vista_activa == "Velocidad del flujo sanguíneo":
             - **Caída de presión a través del stent:** {delta_P:.2f} Pa
             - **Velocidad promedio del flujo sanguíneo en el stent:** {v_prom:.5f} m/s
             - **Presión en la salida del stent:** {P_salida:.2f} Pa
-            - **FFR {ffr:.2f}. Al ser > 0.8, el stent funcionando correctamente **
+            - **FFR: {ffr:.2f}. Al ser > 0.8, el stent funcionando correctamente**
             """
         )
         #st.write(f"Caída de presión a través del stent: {delta_P:.2f} Pa")
