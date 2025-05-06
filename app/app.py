@@ -173,6 +173,7 @@ def expansion(tipo, T_min, T_max, D_inicial, As, Af, alpha_m, alpha_a):
 
     return T, D
     # Función para calcular el flujo sanguíneo
+# Función para calcular el flujo sanguíneo
 def flujo(Q, R_stent, L, mu, P_entrada):
     delta_P = (8 * mu * L * Q) / (np.pi * R_stent**4)  # Caída de presión
     v_prom = Q / (np.pi * R_stent**2)  # Velocidad promedio 
@@ -187,7 +188,31 @@ def flujo(Q, R_stent, L, mu, P_entrada):
     # Calcular velocidad máxima en el centro
     v_max = np.max(v)
 
-    return delta_P, v_prom, P_salida, v, r, v_max 
+    #Cálcular FFR o iFR
+    ffr= P_salida/P_entrada
+    plt.figure(figsize=(10, 6))
+
+    # Perfil de velocidad
+    plt.plot(v, r * 1000, label='Perfil de velocidad', color='blue')  # r en mm
+    
+    # Marcar velocidad máxima en el centro
+    plt.scatter([v_max], [0], color='red', zorder=5, label="Velocidad máxima (centro)")
+    plt.text(v_max + 0.005, 0, f"Max: {v_max:.5f} m/s", color='red')
+    
+    # Marcar velocidad cero en el borde
+    plt.scatter([0], [R_stent * 1000], color='green', zorder=5, label="Velocidad en la pared (borde)")
+    plt.text(0.005, R_stent * 1000 + 0.5, "V_borde: 0 m/s", color='green')
+    
+    # Configurar el gráfico
+    plt.xlabel('Velocidad (m/s)')
+    plt.ylabel('Radio (mm)')
+    
+    plt.title('Perfil de Velocidad de Poiseuille en el Stent')
+    plt.legend()
+    plt.grid(True)
+    plt.gca().invert_yaxis()  # Invertir eje Y para que el centro esté arriba
+    plt.show()
+    return delta_P, v_prom, P_salida, v, r, v_max,ffr 
 
 if st.session_state.vista_activa == "Inicio":
     st.title("Visualización del Stent Inteligente")
@@ -298,7 +323,7 @@ elif st.session_state.vista_activa == "Velocidad del flujo sanguíneo":
     st.markdown("""
     <div style='background-color: #f9f9f9; padding: 20px; border-radius: 10px;'>
     <p>Este modelo analiza el flujo sanguíneo a través de un stent.  Se ha utilizado la ley de Poiseuille, para calcular 
-    la caída de presión, la velocidad promedio y el perfil de velocidad en función del flujo sanguíneo.</p>
+    la caída de presión, la velocidad promedio y el perfil de velocidad en función del flujo sanguíneo y el FFR.</p>
     </div>
     """, unsafe_allow_html=True)
     
@@ -312,8 +337,8 @@ elif st.session_state.vista_activa == "Velocidad del flujo sanguíneo":
         tipo = st.selectbox("Tipo de medida", ["En reposo", "En actividad física"])
         Q_input = st.text_input("Flujo sanguíneo (m³/s)", value="3.34e-6" if tipo == "En reposo" else "16.67e-6")
         Q = float(Q_input)
-        L = st.number_input("Longitud del stent (m)", value=0.30)
-        R_stent_input = st.text_input("Radio del stent (m)", value=3.55e-3)
+        L = st.number_input("Longitud del stent (m)", value=0.020)
+        R_stent_input = st.text_input("Radio del stent (m)", value=1.775e-3)
         R_stent = float(R_stent_input)
         mu_input = st.text_input("Viscosidad de la sangre (Pa·s)", value=3.5e-3)
         mu = float(mu_input)
@@ -321,7 +346,7 @@ elif st.session_state.vista_activa == "Velocidad del flujo sanguíneo":
 
     with col2:
         st.subheader("Resultado del Flujo Sanguíneo")
-        delta_P, v_prom, P_salida, v, r, v_max = flujo( Q, R_stent, L, mu,P_entrada)
+        delta_P, v_prom, P_salida, v, r, v_max, ffr = flujo( Q, R_stent, L, mu,P_entrada)
         resultados = st.empty()  # Crear un espacio vacío
 
         # Actualizar la caja con los resultados
@@ -330,6 +355,7 @@ elif st.session_state.vista_activa == "Velocidad del flujo sanguíneo":
             - **Caída de presión a través del stent:** {delta_P:.2f} Pa
             - **Velocidad promedio del flujo sanguíneo en el stent:** {v_prom:.5f} m/s
             - **Presión en la salida del stent:** {P_salida:.2f} Pa
+            - **FFR {ffr:.2f}. Al ser > 0.8, el stent funcionando correctamente **
             """
         )
         #st.write(f"Caída de presión a través del stent: {delta_P:.2f} Pa")
