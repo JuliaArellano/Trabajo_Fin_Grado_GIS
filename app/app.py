@@ -322,8 +322,11 @@ elif st.session_state.vista_activa == "Velocidad del flujo sanguíneo":
     st.title("🩸 Aproximación de la velocidad del flujo sanguíneo en el stent")
     st.markdown("""
     <div style='background-color: #f9f9f9; padding: 20px; border-radius: 10px;'>
-    <p>Este modelo analiza el flujo sanguíneo a través de un stent.  Se ha utilizado la ley de Poiseuille, para calcular 
-    la caída de presión, la velocidad promedio y el perfil de velocidad en función del flujo sanguíneo y el FFR o iFR.</p>
+    <p>Este modelo estudia el comportamiento del flujo sanguíneo a través de un stent implantado en una arteria. 
+    Para ello, se ha aplicado la ley de Poiseuille, que describe el flujo laminar de un fluido viscoso en un conducto cilíndrico,
+    con el fin de calcular parámetros clave como la caída de presión, la velocidad promedio y el perfil de velocidad en función del caudal sanguíneo. 
+    Además, se ha determinado el índice de reserva fraccional de flujo (FFR) y el índice de reserva de flujo instantáneo (iFR), dos métricas fundamentales para evaluar la funcionalidad 
+    del stent en estenosis.</p>
     </div>
     """, unsafe_allow_html=True)
     
