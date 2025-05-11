@@ -607,7 +607,7 @@ elif st.session_state.vista_activa == "Análisis del Sistema de Comunicación":
 
         longitud_hilo = 2 * math.pi * r_bobina_m * vueltas_bobina
         area_seccion = math.pi * (d_m / 2)**2
-        R = rho_oro * longitud_hilo / area_seccion
+        R = resistividad * longitud_hilo / area_seccion
         R_total = 1 / (1/R + 1/R)
 
         st.markdown(f"""
