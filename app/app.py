@@ -79,7 +79,7 @@ vistas = {
     "Expansión térmica": "\U0001F321️",
     "Velocidad del flujo sanguíneo":  "\U0001FA78",
     "Parámetros del Circuito LC": "\u2699",
-    "Factor de calidad del Circuito LC":"\U0001F50D",
+    "Análisis del Sistema de Comunicación":"\U0001F50D",
     "Cálculo de Tensiones y Factor de Seguridad": "\U000026D3"
 
 }
@@ -559,11 +559,11 @@ elif st.session_state.vista_activa == "Parámetros del Circuito LC":
     
     # Mostrar en Streamlit
     st.plotly_chart(fig)
-elif st.session_state.vista_activa == "Factor de calidad del Circuito LC":
+elif st.session_state.vista_activa == "Análisis del Sistema de Comunicación":
 # Parámetros del sistema
     
     # Título de la sección
-    st.markdown("## 🔍 Cálculo del Factor de Calidad (Q)")
+    st.markdown("## 🔍 Análisis del Sistema de Comunicación")
 
     st.markdown("""
     <div style='background-color: #f9f9f9; padding: 20px; border-radius: 10px;'>
@@ -597,25 +597,26 @@ elif st.session_state.vista_activa == "Factor de calidad del Circuito LC":
         else:
             resistividad = st.number_input("Resistividad (ohm·m)", value=2.44e-8 )
 
-        r_bobina_m_input = st.text_input("Radio de la bobina (m)", value="0.0003")
+        r_bobina_m_input = st.text_input("Radio de la bobina (m)", value="0.0006")
         r_bobina_m = float(r_bobina_m_input)
-        vueltas_bobina = st.number_input("Número de vueltas", value=12)
-        d_m_input = st.text_input("Diámetro de la bobina (m)", value="1e-6")
+        vueltas_bobina = st.number_input("Número de vueltas", value=10)
+        d_m_input = st.text_input("Diámetro de la bobina (m)", value="5e-6")
         d_m = float(d_m_input)
-        L_input  = st.text_input("Introduzca el valor de inducitancia calculado en la anterior sección(H)", value="0.02e-6" )
+        L_input  = st.text_input("Introduzca el valor de inducitancia calculado en la anterior sección", value=L_total )
         L = float(L_input)
 
         longitud_hilo = 2 * math.pi * r_bobina_m * vueltas_bobina
         area_seccion = math.pi * (d_m / 2)**2
-        R = resistividad * longitud_hilo / area_seccion
+        R = rho_oro * longitud_hilo / area_seccion
+        R_total = 1 / (1/R + 1/R)
 
         st.markdown(f"""
         <div style="background-color:#f9f9f9; padding: 15px; border-radius: 5px;">
         <ul style="list-style-type: disc; padding-left: 20px;">
             <strong>Resultados</strong>        
             <li><strong>Inductancia total:</strong> {L * 1e6:.2f} µH</li>
-            <li><strong>Capacitancia total:</strong> {C_slider * 1e12:.2f} pF</li>
-            <li><strong>Resistencia :</strong> {R / 1e6:.2f} ohm</li>
+            <li><strong>Capacitancia total:</strong> {C_slider :.2f} pF</li>
+            <li><strong>Resistencia :</strong> {R_total:.2f} ohm</li>
         </ul>
         </div>
     """, unsafe_allow_html=True)
