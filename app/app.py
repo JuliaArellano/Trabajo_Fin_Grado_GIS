@@ -10,7 +10,7 @@ import os
 import math
 import trimesh
 import plotly.graph_objects as go
-import pythreejs as three
+from plotly.subplots import make_subplots
 
 # Configuración general
 st.set_page_config(page_title="Visualización del Stent Inteligente", layout="wide")
