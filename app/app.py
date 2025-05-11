@@ -496,62 +496,62 @@ elif st.session_state.vista_activa == "Parámetros del Circuito LC":
     """, unsafe_allow_html=True)
 
 
-st.markdown("<br>**Selecciona un rango de distancia entre electrodos (µm)**", unsafe_allow_html=True)
-
-# Slider para seleccionar rango de distancia
-d_slider = st.slider(
-    "",
-    min_value=3.0, max_value=10.0, value=(4.0, 8.0), step=0.1,
-)
-
-# Crear el rango de distancia (convertido a metros)
-d_range = np.linspace(d_slider[0], d_slider[1], 100) * 1e-6
-
-# Calcular capacitancia total para cada distancia
-C_total_array = np.array([calcular_capacitancia(A_electrodo_m2, D, num_pares_electrodos) for D in d_range])
-f_resonancia_array = np.array([calcular_frecuencia_resonancia(L_total, C) for C in C_total_array])
-f_resonancia_MHz_array = f_resonancia_array / 1e6  # Convertir a MHz
-
-# Crear subplots interactivos
-fig = make_subplots(
-    rows=1, cols=2, subplot_titles=(
-        "Frecuencia vs Distancia entre Electrodos",
-        "Frecuencia vs Capacitancia Total"
+    st.markdown("<br>**Selecciona un rango de distancia entre electrodos (µm)**", unsafe_allow_html=True)
+    
+    # Slider para seleccionar rango de distancia
+    d_slider = st.slider(
+        "",
+        min_value=3.0, max_value=10.0, value=(4.0, 8.0), step=0.1,
     )
-)
-
-# Gráfico: Frecuencia vs Distancia
-fig.add_trace(go.Scatter(
-    x=d_range * 1e6,  # Convertir a µm
-    y=f_resonancia_MHz_array,
-    mode='lines',
-    name='f vs distancia',
-    line=dict(color='blue')
-), row=1, col=1)
-
-# Gráfico: Frecuencia vs Capacitancia
-fig.add_trace(go.Scatter(
-    x=C_total_array * 1e12,  # Convertir a pF
-    y=f_resonancia_MHz_array,
-    mode='lines',
-    name='f vs capacitancia',
-    line=dict(color='green')
-), row=1, col=2)
-
-# Ejes
-fig.update_xaxes(title_text="Distancia (µm)", autorange="reversed", row=1, col=1)
-fig.update_yaxes(title_text="Frecuencia (MHz)", row=1, col=1)
-fig.update_xaxes(title_text="Capacitancia (pF)", row=1, col=2)
-fig.update_yaxes(title_text="Frecuencia (MHz)", row=1, col=2)
-
-# Layout general
-fig.update_layout(
-    template="plotly_white",
-    height=500,
-    title_text="Relaciones entre Frecuencia, Distancia y Capacitancia",
-    showlegend=False
-)
-
-# Mostrar en Streamlit
-st.plotly_chart(fig)
+    
+    # Crear el rango de distancia (convertido a metros)
+    d_range = np.linspace(d_slider[0], d_slider[1], 100) * 1e-6
+    
+    # Calcular capacitancia total para cada distancia
+    C_total_array = np.array([calcular_capacitancia(A_electrodo_m2, D, num_pares_electrodos) for D in d_range])
+    f_resonancia_array = np.array([calcular_frecuencia_resonancia(L_total, C) for C in C_total_array])
+    f_resonancia_MHz_array = f_resonancia_array / 1e6  # Convertir a MHz
+    
+    # Crear subplots interactivos
+    fig = make_subplots(
+        rows=1, cols=2, subplot_titles=(
+            "Frecuencia vs Distancia entre Electrodos",
+            "Frecuencia vs Capacitancia Total"
+        )
+    )
+    
+    # Gráfico: Frecuencia vs Distancia
+    fig.add_trace(go.Scatter(
+        x=d_range * 1e6,  # Convertir a µm
+        y=f_resonancia_MHz_array,
+        mode='lines',
+        name='f vs distancia',
+        line=dict(color='blue')
+    ), row=1, col=1)
+    
+    # Gráfico: Frecuencia vs Capacitancia
+    fig.add_trace(go.Scatter(
+        x=C_total_array * 1e12,  # Convertir a pF
+        y=f_resonancia_MHz_array,
+        mode='lines',
+        name='f vs capacitancia',
+        line=dict(color='green')
+    ), row=1, col=2)
+    
+    # Ejes
+    fig.update_xaxes(title_text="Distancia (µm)", autorange="reversed", row=1, col=1)
+    fig.update_yaxes(title_text="Frecuencia (MHz)", row=1, col=1)
+    fig.update_xaxes(title_text="Capacitancia (pF)", row=1, col=2)
+    fig.update_yaxes(title_text="Frecuencia (MHz)", row=1, col=2)
+    
+    # Layout general
+    fig.update_layout(
+        template="plotly_white",
+        height=500,
+        title_text="Relaciones entre Frecuencia, Distancia y Capacitancia",
+        showlegend=False
+    )
+    
+    # Mostrar en Streamlit
+    st.plotly_chart(fig)
 
