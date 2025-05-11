@@ -501,7 +501,7 @@ elif st.session_state.vista_activa == "Parámetros del Circuito LC":
     # Slider para seleccionar rango de distancia
     d_slider = st.slider(
         "",
-        min_value=3.0, max_value=10.0, value=(4.0, 8.0), step=0.1,
+        min_value=0.0, max_value=5.0, value=(4.0, 8.0), step=0.1,
     )
     
     # Crear el rango de distancia (convertido a metros)
