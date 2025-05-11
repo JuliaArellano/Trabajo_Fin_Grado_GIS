@@ -213,7 +213,18 @@ def flujo(Q, R_stent, L, mu, P_entrada):
     plt.gca().invert_yaxis()  # Invertir eje Y para que el centro esté arriba
     plt.show()
     return delta_P, v_prom, P_salida, v, r, v_max,ffr 
+def calcular_inductancia(r_cm, l_cm, N):
+    L_uH = (r_cm**2 * N**2) / (9 * r_cm + 10 * l_cm)
+    return L_uH * 1e-6  # Convertir a Henrios
 
+def calcular_capacitancia(A_electrodo_m2, d_poliamida_m, num_pares_electrodos):
+    epsilon_0 = 8.854e-12  # F/m (permitividad del vacío)
+    epsilon_r_poliamida = 3.2  # Permitividad relativa de la poliamida
+    C_par = epsilon_0 * epsilon_r_poliamida * A_electrodo_m2 / d_poliamida_m
+    return num_pares_electrodos * C_par * 2
+
+def calcular_frecuencia_resonancia(L, C):
+    return 1 / (2 * np.pi * np.sqrt(L * C))
 if st.session_state.vista_activa == "Inicio":
     st.title("Visualización del Stent Inteligente")
 
@@ -428,4 +439,35 @@ elif st.session_state.vista_activa == "Velocidad del flujo sanguíneo":
     
     # Ejecutar la simulación
     evaluar_estenosis(Q_rep,Q_act, R_stent, L, mu, P_entrada)
+elif st.session_state.vista_activa == "Parámetros del Circuito LC":
 
+    # Título de la sección
+    st.title("⚙️ Simulación de los parámetros del circuito LC")
+
+    # Descripción interactiva
+    st.markdown("""
+    <div style='background-color: #f9f9f9; padding: 20px; border-radius: 10px;'>
+    <p>En esta sección se podrá calcular y explorar de forma interactiva la capacitancia, la inductancia, la frecuencia de resonancia 
+               del circuito resonante LC del stent inteligente.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("---")  # Separador visual
+
+    # Interfaz Streamlit
+    with st.expander("🔧 Parámetros de las bobinas y sensor", expanded=True):
+        col1, col2 = st.columns(2)
+        with col1:
+            st.markdown("### 🌀 Cálculo de la Inductancia")
+            r_bobina_cm_input = st.text_input("Radio de la bobina (cm)", value="0.03")
+            r_bobina_cm = float(r_bobina_cm_input)
+            l_bobina_cm_input = st.text_input("Longitud de la bobina (cm)", value="0.3")
+            l_bobina_cm = float(l_bobina_cm_input)
+            vueltas_bobina = st.number_input("Número de vueltas", value=12)
+        with col2:
+            st.markdown("### ⚡ Cálculo de la Capacitancia")
+            A_electrodo_m2_input = st.text_input("Área de los electrodos (m²)", value="1.05e-7")
+            A_electrodo_m2 = float(A_electrodo_m2_input)
+            d_poliamida_m_inicial = st.text_input("Grosor de la capa de poliamida (m)", value="5e-6")
+            d_poliamida_m = float(d_poliamida_m_inicial)
+            num_pares_electrodos = st.number_input("Número de pares de electrodos", value  = 48)
