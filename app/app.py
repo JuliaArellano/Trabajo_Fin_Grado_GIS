@@ -559,4 +559,124 @@ elif st.session_state.vista_activa == "Parámetros del Circuito LC":
     
     # Mostrar en Streamlit
     st.plotly_chart(fig)
+elif st.session_state.vista_activa == "Factor de calidad del Circuito LC":
+# Parámetros del sistema
+    
+    # Título de la sección
+    st.markdown("## 🔍 Cálculo del Factor de Calidad (Q)")
 
+    st.markdown("""
+    <div style='background-color: #f9f9f9; padding: 20px; border-radius: 10px;'>
+        <p style='font-size:16px;'>
+    El <strong>factor de calidad</strong> (Q) indica la eficiencia del circuito resonante LC.<br>
+    Un valor más alto de Q implica <strong>menores pérdidas</strong> y una <strong>mejor selectividad</strong> en la frecuencia de resonancia.
+  </p>
+</div>
+""", unsafe_allow_html=True)
+
+     # Slider para ajustar la capacitancia
+    C_slider = st.slider(
+        "Capacitancia (pF)", 
+        min_value=10.0, 
+        max_value=100.0, 
+        value=57.12, 
+        step=0.01
+            )
+    # Interfaz Streamlit
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.subheader("Parámetros de Entrada")
+        tipo = st.selectbox("Material de las bobinas: ", ["Oro", "Otro"])
+        if tipo =="Oro":
+            # Si es oro, la resistividad está predefinida
+            resistividad = 2.44e-8  # Resistividad del oro en ohm·m
+            st.write(f"Resistividad del oro seleccionada: {resistividad:.2e} ohm·m")
+            
+
+        else:
+            resistividad = st.number_input("Resistividad (ohm·m)", value=2.44e-8 )
+
+        r_bobina_m_input = st.text_input("Radio de la bobina (m)", value="0.0003")
+        r_bobina_m = float(r_bobina_m_input)
+        vueltas_bobina = st.number_input("Número de vueltas", value=12)
+        d_m_input = st.text_input("Diámetro de la bobina (m)", value="1e-6")
+        d_m = float(d_m_input)
+        L_input  = st.text_input("Introduzca el valor de inducitancia calculado en la anterior sección(H)", value="0.02e-6" )
+        L = float(L_input)
+
+        longitud_hilo = 2 * math.pi * r_bobina_m * vueltas_bobina
+        area_seccion = math.pi * (d_m / 2)**2
+        R = resistividad * longitud_hilo / area_seccion
+
+        st.markdown(f"""
+        <div style="background-color:#f9f9f9; padding: 15px; border-radius: 5px;">
+        <ul style="list-style-type: disc; padding-left: 20px;">
+            <strong>Resultados</strong>        
+            <li><strong>Inductancia total:</strong> {L * 1e6:.2f} µH</li>
+            <li><strong>Capacitancia total:</strong> {C_slider * 1e12:.2f} pF</li>
+            <li><strong>Resistencia :</strong> {R / 1e6:.2f} ohm</li>
+        </ul>
+        </div>
+    """, unsafe_allow_html=True)
+    with col2:
+       
+        st.subheader("Factor de calidad")
+        
+        # Convertir la capacitancia a Faradios
+        C = C_slider * 1e-12
+
+        # Calcular el factor de calidad (Q)
+        Q = (1 / R) * math.sqrt(L / C)
+
+        # Mostrar los resultados
+        st.markdown(f"**Factor de calidad (Q)**: {Q:.2f}")
+
+        # Crear el gráfico de Factor de Calidad (Q) vs. Capacitancia
+        C_range = np.linspace(10, 100, 100)  # Rango de capacitancia (pF)
+        Q_array = (1 / R) * np.sqrt(L / (C_range * 1e-12))  # Calcular Q para el rango de capacitancia
+
+        # Crear gráfico interactivo
+        fig = go.Figure()
+
+        fig.add_trace(go.Scatter(
+            x=C_range,
+            y=Q_array,  # Factor de calidad (Q)
+            mode='lines',
+            name='Factor de Calidad (Q)',
+            line=dict(color='royalblue', width=2)
+        ))
+
+        fig.add_trace(go.Scatter(
+            x=[C_slider],
+            y=[Q],  # Q para el valor seleccionado
+            mode='markers+text',
+            name='Valor Seleccionado',
+            marker=dict(color='green', size=10, symbol='circle'),
+            text=[f'{Q:.2f}'],
+            textposition='top right',
+            textfont=dict(color='green', size=12)
+        ))
+
+        fig.update_layout(
+            title='Relación entre Capacitancia y Factor de Calidad (Q)',
+            xaxis_title='Capacitancia (pF)',
+            yaxis_title='Factor de Calidad (Q)',
+            template='plotly_white',
+            font=dict(family="Arial", size=14),
+            xaxis=dict(
+                title='Capacitancia (pF)',
+                showline=True,
+                showgrid=True,
+                zeroline=True
+            ),
+            yaxis=dict(
+                title='Factor de Calidad (Q)',
+                showline=True,
+                showgrid=True,
+                zeroline=True
+            )
+        )
+
+        # Mostrar gráfico
+        st.plotly_chart(fig)
