@@ -459,11 +459,11 @@ elif st.session_state.vista_activa == "Parámetros del Circuito LC":
         col1, col2 = st.columns(2)
         with col1:
             st.markdown("### 🌀 Cálculo de la Inductancia")
-            r_bobina_cm_input = st.text_input("Radio de la bobina (cm)", value="0.03")
+            r_bobina_cm_input = st.text_input("Radio de la bobina (cm)", value="0.06")
             r_bobina_cm = float(r_bobina_cm_input)
-            l_bobina_cm_input = st.text_input("Longitud de la bobina (cm)", value="0.3")
+            l_bobina_cm_input = st.text_input("Longitud de la bobina (cm)", value="0.25")
             l_bobina_cm = float(l_bobina_cm_input)
-            vueltas_bobina = st.number_input("Número de vueltas", value=12)
+            vueltas_bobina = st.number_input("Número de vueltas", value=10)
         with col2:
             st.markdown("### ⚡ Cálculo de la Capacitancia")
             A_electrodo_m2_input = st.text_input("Área de los electrodos (m²)", value="1.05e-7")
@@ -471,3 +471,26 @@ elif st.session_state.vista_activa == "Parámetros del Circuito LC":
             d_poliamida_m_inicial = st.text_input("Grosor de la capa de poliamida (m)", value="5e-6")
             d_poliamida_m = float(d_poliamida_m_inicial)
             num_pares_electrodos = st.number_input("Número de pares de electrodos", value  = 48)
+        st.markdown("### 📊 Resultados")
+    
+        # Calcular inductancia
+        L_bobina = calcular_inductancia(r_bobina_cm, l_bobina_cm, vueltas_bobina)
+        # Calcular la inductancia total en paralelo
+        L_total = 1 / (1/L_bobina + 1/L_bobina)
+    
+        # Calcular capacitancia
+        C_total = calcular_capacitancia(A_electrodo_m2, d_poliamida_m, num_pares_electrodos)
+    
+        # Calcular frecuencia de resonancia
+        f_resonancia = calcular_frecuencia_resonancia(L_total, C_total)
+    
+        # Mostrar resultados en un cuadro con puntos
+        st.markdown(f"""
+            <div style="background-color:#f9f9f9; padding: 15px; border-radius: 5px;">
+            <ul style="list-style-type: disc; padding-left: 20px;">
+                <li><strong>Inductancia total:</strong> {L_total * 1e6:.2f} µH</li>
+                <li><strong>Capacitancia total:</strong> {C_total * 1e12:.2f} pF</li>
+                <li><strong>Frecuencia de resonancia:</strong> {f_resonancia / 1e6:.2f} MHz</li>
+            </ul>
+            </div>
+        """, unsafe_allow_html=True)
