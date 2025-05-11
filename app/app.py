@@ -539,6 +539,7 @@ elif st.session_state.vista_activa == "Parámetros del Circuito LC":
     ), row=1, col=2)
     
     # Ejes
+    axis_style = dict(linecolor='black', linewidth=2, mirror=True, showline=True)
     fig.update_xaxes(title_text="Distancia (µm)", autorange="reversed", row=1, col=1)
     fig.update_yaxes(title_text="Frecuencia (MHz)", row=1, col=1)
     fig.update_xaxes(title_text="Capacitancia (pF)", row=1, col=2)
