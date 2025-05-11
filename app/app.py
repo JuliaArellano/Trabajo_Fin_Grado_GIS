@@ -602,7 +602,7 @@ elif st.session_state.vista_activa == "Análisis del Sistema de Comunicación":
         vueltas_bobina = st.number_input("Número de vueltas", value=10)
         d_m_input = st.text_input("Diámetro de la bobina (m)", value="5e-6")
         d_m = float(d_m_input)
-        L_input  = st.text_input("Introduzca el valor de inducitancia calculado en la anterior sección", value=L_total )
+        L_input  = st.text_input("Introduzca el valor de inducitancia calculado en la anterior sección", value="0.06e-6" )
         L = float(L_input)
 
         longitud_hilo = 2 * math.pi * r_bobina_m * vueltas_bobina
@@ -628,7 +628,7 @@ elif st.session_state.vista_activa == "Análisis del Sistema de Comunicación":
         C = C_slider * 1e-12
 
         # Calcular el factor de calidad (Q)
-        Q = (1 / R) * math.sqrt(L / C)
+        Q = (1 / R_total) * math.sqrt(L / C)
 
         # Mostrar los resultados
         st.markdown(f"**Factor de calidad (Q)**: {Q:.2f}")
