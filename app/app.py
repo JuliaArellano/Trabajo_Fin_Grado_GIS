@@ -512,43 +512,46 @@ C_total_array = np.array([calcular_capacitancia(A_electrodo_m2, D, num_pares_ele
 f_resonancia_array = np.array([calcular_frecuencia_resonancia(L_total, C) for C in C_total_array])
 f_resonancia_MHz_array = f_resonancia_array / 1e6  # Convertir a MHz
 
-# Crear gráfico interactivo con Plotly
-fig = go.Figure()
-
-fig.add_trace(go.Scatter(
-    x=d_range * 1e6,  # Pasar de metros a micrómetros para el eje X
-    y=f_resonancia_MHz_array,
-    mode='lines',
-    name='Frecuencia vs Distancia',
-    line=dict(color='royalblue', width=2)
-))
-
-# Marcar el punto correspondiente a una distancia y capacitancia concreta (opcional)
-# Aquí podrías usar valores como d_real y C_real si los tienes
-# Ejemplo:
-# d_real = 5e-6
-# C_real = 2 * num_pares_electrodos * epsilon_0 * epsilon_r_poliamida * A_electrodo_m2 / d_real
-# f_real = calcular_frecuencia_resonancia(L_total, C_real) / 1e6
-# fig.add_trace(go.Scatter(...))
-
-# Configurar el diseño del gráfico
-fig.update_layout(
-    title='Relación entre Distancia entre Electrodos y Frecuencia de Resonancia',
-    xaxis_title='Distancia entre electrodos (µm)',
-    yaxis_title='Frecuencia de Resonancia (MHz)',
-    template='plotly_white',
-    font=dict(family="Arial", size=14),
-    xaxis=dict(
-        showline=True,
-        showgrid=True,
-        zeroline=True
-    ),
-    yaxis=dict(
-        showline=True,
-        showgrid=True,
-        zeroline=True
+# Crear subplots interactivos
+fig = make_subplots(
+    rows=1, cols=2, subplot_titles=(
+        "Frecuencia vs Distancia entre Electrodos",
+        "Frecuencia vs Capacitancia Total"
     )
 )
 
+# Gráfico: Frecuencia vs Distancia
+fig.add_trace(go.Scatter(
+    x=d_range * 1e6,  # Convertir a µm
+    y=f_resonancia_MHz_array,
+    mode='lines',
+    name='f vs distancia',
+    line=dict(color='blue')
+), row=1, col=1)
+
+# Gráfico: Frecuencia vs Capacitancia
+fig.add_trace(go.Scatter(
+    x=C_total_array * 1e12,  # Convertir a pF
+    y=f_resonancia_MHz_array,
+    mode='lines',
+    name='f vs capacitancia',
+    line=dict(color='green')
+), row=1, col=2)
+
+# Ejes
+fig.update_xaxes(title_text="Distancia (µm)", autorange="reversed", row=1, col=1)
+fig.update_yaxes(title_text="Frecuencia (MHz)", row=1, col=1)
+fig.update_xaxes(title_text="Capacitancia (pF)", row=1, col=2)
+fig.update_yaxes(title_text="Frecuencia (MHz)", row=1, col=2)
+
+# Layout general
+fig.update_layout(
+    template="plotly_white",
+    height=500,
+    title_text="Relaciones entre Frecuencia, Distancia y Capacitancia",
+    showlegend=False
+)
+
+# Mostrar en Streamlit
 st.plotly_chart(fig)
 
