@@ -540,10 +540,10 @@ elif st.session_state.vista_activa == "Parámetros del Circuito LC":
     
     # Ejes
     axis_style = dict(linecolor='black', linewidth=2, mirror=True, showline=True)
-    fig.update_xaxes(title_text="Distancia (µm)", autorange="reversed", row=1, col=1)
-    fig.update_yaxes(title_text="Frecuencia (MHz)", row=1, col=1)
-    fig.update_xaxes(title_text="Capacitancia (pF)", row=1, col=2)
-    fig.update_yaxes(title_text="Frecuencia (MHz)", row=1, col=2)
+    fig.update_xaxes(title_text="Distancia (µm)", autorange="reversed", row=1, col=1, **axis_style)
+    fig.update_yaxes(title_text="Frecuencia (MHz)", row=1, col=1, **axis_style)
+    fig.update_xaxes(title_text="Capacitancia (pF)", row=1, col=2, **axis_style)
+    fig.update_yaxes(title_text="Frecuencia (MHz)", row=1, col=2, **axis_style)
     
     # Layout general
     fig.update_layout(
