@@ -508,8 +508,8 @@ d_slider = st.slider(
 d_range = np.linspace(d_slider[0], d_slider[1], 100) * 1e-6
 
 # Calcular capacitancia total para cada distancia
-C_total_array = 2 * num_pares_electrodos * epsilon_0 * epsilon_r_poliamida * A_electrodo_m2 / d_range
-f_resonancia_array = calcular_frecuencia_resonancia(L_total, C_total_array)
+C_total_array = np.array([calcular_capacitancia(A_electrodo_m2, D, num_pares_electrodos) for D in d_range])
+f_resonancia_array = np.array([calcular_frecuencia_resonancia(L_total, C) for C in C_total_array])
 f_resonancia_MHz_array = f_resonancia_array / 1e6  # Convertir a MHz
 
 # Crear gráfico interactivo con Plotly
