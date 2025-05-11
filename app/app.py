@@ -471,26 +471,84 @@ elif st.session_state.vista_activa == "Parámetros del Circuito LC":
             d_poliamida_m_inicial = st.text_input("Grosor de la capa de poliamida (m)", value="5e-6")
             d_poliamida_m = float(d_poliamida_m_inicial)
             num_pares_electrodos = st.number_input("Número de pares de electrodos", value  = 48)
-        st.markdown("### 📊 Resultados")
-    
-        # Calcular inductancia
-        L_bobina = calcular_inductancia(r_bobina_cm, l_bobina_cm, vueltas_bobina)
-        # Calcular la inductancia total en paralelo
-        L_total = 1 / (1/L_bobina + 1/L_bobina)
-    
-        # Calcular capacitancia
-        C_total = calcular_capacitancia(A_electrodo_m2, d_poliamida_m, num_pares_electrodos)
-    
-        # Calcular frecuencia de resonancia
-        f_resonancia = calcular_frecuencia_resonancia(L_total, C_total)
-    
-        # Mostrar resultados en un cuadro con puntos
-        st.markdown(f"""
-            <div style="background-color:#f9f9f9; padding: 15px; border-radius: 5px;">
-            <ul style="list-style-type: disc; padding-left: 20px;">
-                <li><strong>Inductancia total:</strong> {L_total * 1e6:.2f} µH</li>
-                <li><strong>Capacitancia total:</strong> {C_total * 1e12:.2f} pF</li>
-                <li><strong>Frecuencia de resonancia:</strong> {f_resonancia / 1e6:.2f} MHz</li>
-            </ul>
-            </div>
-        """, unsafe_allow_html=True)
+    st.markdown("### 📊 Resultados")
+
+    # Calcular inductancia
+    L_bobina = calcular_inductancia(r_bobina_cm, l_bobina_cm, vueltas_bobina)
+    # Calcular la inductancia total en paralelo
+    L_total = 1 / (1/L_bobina + 1/L_bobina)
+
+    # Calcular capacitancia
+    C_total = calcular_capacitancia(A_electrodo_m2, d_poliamida_m, num_pares_electrodos)
+
+    # Calcular frecuencia de resonancia
+    f_resonancia = calcular_frecuencia_resonancia(L_total, C_total)
+
+    # Mostrar resultados en un cuadro con puntos
+    st.markdown(f"""
+        <div style="background-color:#f9f9f9; padding: 15px; border-radius: 5px;">
+        <ul style="list-style-type: disc; padding-left: 20px;">
+            <li><strong>Inductancia total:</strong> {L_total * 1e6:.2f} µH</li>
+            <li><strong>Capacitancia total:</strong> {C_total * 1e12:.2f} pF</li>
+            <li><strong>Frecuencia de resonancia:</strong> {f_resonancia / 1e6:.2f} MHz</li>
+        </ul>
+        </div>
+    """, unsafe_allow_html=True)
+
+
+st.markdown("<br>**Selecciona un rango de distancia entre electrodos (µm)**", unsafe_allow_html=True)
+
+# Slider para seleccionar rango de distancia
+d_slider = st.slider(
+    "",
+    min_value=3.0, max_value=10.0, value=(4.0, 8.0), step=0.1,
+)
+
+# Crear el rango de distancia (convertido a metros)
+d_range = np.linspace(d_slider[0], d_slider[1], 100) * 1e-6
+
+# Calcular capacitancia total para cada distancia
+C_total_array = 2 * num_pares_electrodos * epsilon_0 * epsilon_r_poliamida * A_electrodo_m2 / d_range
+f_resonancia_array = calcular_frecuencia_resonancia(L_total, C_total_array)
+f_resonancia_MHz_array = f_resonancia_array / 1e6  # Convertir a MHz
+
+# Crear gráfico interactivo con Plotly
+fig = go.Figure()
+
+fig.add_trace(go.Scatter(
+    x=d_range * 1e6,  # Pasar de metros a micrómetros para el eje X
+    y=f_resonancia_MHz_array,
+    mode='lines',
+    name='Frecuencia vs Distancia',
+    line=dict(color='royalblue', width=2)
+))
+
+# Marcar el punto correspondiente a una distancia y capacitancia concreta (opcional)
+# Aquí podrías usar valores como d_real y C_real si los tienes
+# Ejemplo:
+# d_real = 5e-6
+# C_real = 2 * num_pares_electrodos * epsilon_0 * epsilon_r_poliamida * A_electrodo_m2 / d_real
+# f_real = calcular_frecuencia_resonancia(L_total, C_real) / 1e6
+# fig.add_trace(go.Scatter(...))
+
+# Configurar el diseño del gráfico
+fig.update_layout(
+    title='Relación entre Distancia entre Electrodos y Frecuencia de Resonancia',
+    xaxis_title='Distancia entre electrodos (µm)',
+    yaxis_title='Frecuencia de Resonancia (MHz)',
+    template='plotly_white',
+    font=dict(family="Arial", size=14),
+    xaxis=dict(
+        showline=True,
+        showgrid=True,
+        zeroline=True
+    ),
+    yaxis=dict(
+        showline=True,
+        showgrid=True,
+        zeroline=True
+    )
+)
+
+st.plotly_chart(fig)
+
