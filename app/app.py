@@ -560,124 +560,121 @@ elif st.session_state.vista_activa == "Parámetros del Circuito LC":
     # Mostrar en Streamlit
     st.plotly_chart(fig)
 elif st.session_state.vista_activa == "Análisis del Sistema de Comunicación":
-# Parámetros del sistema
-    
-    # Título de la sección
     st.markdown("## 🔍 Análisis del Sistema de Comunicación")
 
     st.markdown("""
-    <div style='background-color: #f9f9f9; padding: 20px; border-radius: 10px;'>
-        <p style='font-size:16px;'>
-    El <strong>factor de calidad</strong> (Q) indica la eficiencia del circuito resonante LC.<br>
-    Un valor más alto de Q implica <strong>menores pérdidas</strong> y una <strong>mejor selectividad</strong> en la frecuencia de resonancia.
-  </p>
-</div>
-""", unsafe_allow_html=True)
-
-     # Slider para ajustar la capacitancia
-    C_slider = st.slider(
-        "Capacitancia (pF)", 
-        min_value=10.0, 
-        max_value=100.0, 
-        value=57.12, 
-        step=0.01
-            )
-    # Interfaz Streamlit
-    col1, col2 = st.columns(2)
-
-    with col1:
-        st.subheader("Parámetros de Entrada")
-        tipo = st.selectbox("Material de las bobinas: ", ["Oro", "Otro"])
-        if tipo =="Oro":
-            # Si es oro, la resistividad está predefinida
-            resistividad = 2.44e-8  # Resistividad del oro en ohm·m
-            st.write(f"Resistividad del oro seleccionada: {resistividad:.2e} ohm·m")
-            
-
-        else:
-            resistividad = st.number_input("Resistividad (ohm·m)", value=2.44e-8 )
-
-        r_bobina_m_input = st.text_input("Radio de la bobina (m)", value="0.0006")
-        r_bobina_m = float(r_bobina_m_input)
-        vueltas_bobina = st.number_input("Número de vueltas", value=10)
-        d_m_input = st.text_input("Diámetro de la bobina (m)", value="5e-6")
-        d_m = float(d_m_input)
-        L_input  = st.text_input("Introduzca el valor de inducitancia calculado en la anterior sección", value="0.06e-6" )
-        L = float(L_input)
-
-        longitud_hilo = 2 * math.pi * r_bobina_m * vueltas_bobina
-        area_seccion = math.pi * (d_m / 2)**2
-        R = resistividad * longitud_hilo / area_seccion
-        R_total = 1 / (1/R + 1/R)
-
-        st.markdown(f"""
-        <div style="background-color:#f9f9f9; padding: 15px; border-radius: 5px;">
-        <ul style="list-style-type: disc; padding-left: 20px;">
-            <strong>Resultados</strong>        
-            <li><strong>Inductancia total:</strong> {L * 1e6:.2f} µH</li>
-            <li><strong>Capacitancia total:</strong> {C_slider :.2f} pF</li>
-            <li><strong>Resistencia :</strong> {R_total:.2f} ohm</li>
-        </ul>
+        <div style='background-color: #f9f9f9; padding: 20px; border-radius: 10px;'>
+            <p style='font-size:16px;'>
+            En esta sección, se presentarán los resultados del <strong>análisis del sistema de comunicación</strong>. Se detallarán los valores del <strong>factor de calidad (Q)</strong> de los circuitos internos y externos, así como la <strong>distancia máxima de comunicación</strong> estimada, acompañada de su interpretación. Estos resultados permitirán evaluar la eficiencia del sistema y su capacidad para transmitir datos de manera efectiva bajo las condiciones establecidas.
+            </p>
         </div>
     """, unsafe_allow_html=True)
-    with col2:
-       
-        st.subheader("Factor de calidad")
-        
-        # Convertir la capacitancia a Faradios
-        C = C_slider * 1e-12
 
-        # Calcular el factor de calidad (Q)
-        Q = (1 / R_total) * math.sqrt(L / C)
 
-        # Mostrar los resultados
-        st.markdown(f"**Factor de calidad (Q)**: {Q:.2f}")
 
-        # Crear el gráfico de Factor de Calidad (Q) vs. Capacitancia
-        C_range = np.linspace(10, 100, 100)  # Rango de capacitancia (pF)
-        Q_array = (1 / R) * np.sqrt(L / (C_range * 1e-12))  # Calcular Q para el rango de capacitancia
+    tab1, tab2 = st.tabs(["⚙️ Parámetros Internos", "📡 Parámetros Externos"])
 
-        # Crear gráfico interactivo
-        fig = go.Figure()
+    with tab1:
+        col1, col2 = st.columns([2, 1])
 
-        fig.add_trace(go.Scatter(
-            x=C_range,
-            y=Q_array,  # Factor de calidad (Q)
-            mode='lines',
-            name='Factor de Calidad (Q)',
-            line=dict(color='royalblue', width=2)
-        ))
+        with col1:
+            tipo = st.selectbox("Material de las bobinas:", ["Oro", "Otro"])
+            resistividad = 2.44e-8 if tipo == "Oro" else st.number_input("Resistividad (ohm·m)", value=2.44e-8)
 
-        fig.add_trace(go.Scatter(
-            x=[C_slider],
-            y=[Q],  # Q para el valor seleccionado
-            mode='markers+text',
-            name='Valor Seleccionado',
-            marker=dict(color='green', size=10, symbol='circle'),
-            text=[f'{Q:.2f}'],
-            textposition='top right',
-            textfont=dict(color='green', size=12)
-        ))
+            r_bobina_m = float(st.text_input("Radio de la bobina (m)", value="0.0006"))
+            vueltas_bobina = st.number_input("Número de vueltas", value=10)
+            d_m = float(st.text_input("Diámetro del hilo conductor (m)", value="5e-6"))
+            L = float(st.text_input("Inductancia total calculada (H)", value="0.06e-6"))
 
-        fig.update_layout(
-            title='Relación entre Capacitancia y Factor de Calidad (Q)',
-            xaxis_title='Capacitancia (pF)',
-            yaxis_title='Factor de Calidad (Q)',
-            template='plotly_white',
-            font=dict(family="Arial", size=14),
-            xaxis=dict(
-                title='Capacitancia (pF)',
-                showline=True,
-                showgrid=True,
-                zeroline=True
-            ),
-            yaxis=dict(
-                title='Factor de Calidad (Q)',
-                showline=True,
-                showgrid=True,
-                zeroline=True
-            )
-        )
+        with col2:
+            longitud_hilo = 2 * math.pi * r_bobina_m * vueltas_bobina
+            area_seccion = math.pi * (d_m / 2)**2
+            R = resistividad * longitud_hilo / area_seccion
+            R_total = 1 / (1/R + 1/R)
 
-        # Mostrar gráfico
-        st.plotly_chart(fig)
+            C_fija = 57.12e-12  # 57.12 pF
+            Q = (1 / R_total) * math.sqrt(L / C_fija)
+
+            st.markdown("""
+            <div style="background-color:#f1f1f1; padding: 15px; border-radius: 10px;">
+                <h4 style="margin-top: 0;">🧾 Resultados:</h4>
+                <ul>
+                    <li><strong>Inductancia:</strong> {:.2f} µH</li>
+                    <li><strong>Capacitancia:</strong> 57.12 pF</li>
+                    <li><strong>Resistencia interna:</strong> {:.2f} Ω</li>
+                    <li><strong>Q interno:</strong> {:.2f}</li>
+                </ul>
+            </div>
+            """.format(L * 1e6, R_total, Q), unsafe_allow_html=True)
+
+    with tab2:
+        col3, col4 = st.columns([2, 1])
+
+        with col3:
+            L_externa = float(st.text_input("Inductancia externa (H)", value="4e-6"))
+            R_externa = st.number_input("Resistencia externa (Ω)", value=25.0)
+            radio_bobina_ext = st.number_input("Radio de la bobina emisora externa (m)", value=0.035)
+
+        with col4:
+
+            C_externa = 1 / ((2 * math.pi * 86.54e6)**2 * L_externa)
+            Q_externa = (1 / R_externa) * math.sqrt(L_externa / C_externa)
+
+            st.markdown("""
+            <div style="background-color:#f1f1f1; padding: 15px; border-radius: 10px;">
+                <h4 style="margin-top: 0;">🧾 Resultados:</h4>
+                <ul>
+                    <li><strong>Inductancia_ext:</strong> {:.2f} µH</li>
+                    <li><strong>Capacitancia_ext:</strong> {:.2f} pF</li>
+                    <li><strong>Resistencia_ext:</strong> {:.2f} Ω</li>
+                    <li><strong>Q externo:</strong> {:.2f}</li>
+                </ul>
+            </div>
+            """.format(L_externa * 1e6, C_externa * 1e12, R_externa, Q_externa), unsafe_allow_html=True)
+
+
+    # Cálculo de distancia final y explicación
+    k_eff = 0.8
+    d_max = radio_bobina_ext * k_eff * math.sqrt(Q_externa * Q)
+
+    # Título
+    st.markdown("## 📊 Resultados Globales del Sistema de Comunicación")
+
+    # Tarjeta de resultados con explicación
+    st.markdown(f"""
+    <div style="background-color:#f1f1f1; padding: 20px; border-radius: 12px;">
+        <h4 style="margin-top: 0;">📏 Cálculo de la Distancia Máxima de Comunicación</h4>
+        <p style="font-size:16px;">
+            A partir de los parámetros internos y externos definidos, se calcula la distancia máxima a la que el sistema puede transmitir información de manera eficiente. 
+            Esta distancia depende del <strong>factor de calidad (Q)</strong> de ambos circuitos </strong>.Esta distancia representa el alcance teórico bajo condiciones óptimas 
+            de acoplamiento resonante. Valores bajos indican necesidad de optimización en el diseño del circuito interno o externo.
+        </p>
+        <ul style="font-size:16px;">
+            <li><strong>Q interno:</strong> {Q:.2f}</li>
+            <li><strong>Q externo:</strong> {Q_externa:.2f}</li>
+            <li><strong>Distancia máxima estimada:</strong> <strong>{d_max*100:.2f} cm</strong></li>
+        </ul>
+        <p style="font-size:16px;">
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # Interpretación visual
+    if d_max < 0.01:
+        interpretacion = "📉 <strong>Distancia muy baja.</strong> El sistema no será eficiente. Revisa el diseño interno o mejora el acoplamiento."
+        color = "#d9534f"
+    elif d_max < 0.03:
+        interpretacion = "⚠️ <strong>Distancia aceptable pero limitada.</strong> Solo funcionará con buena alineación y proximidad."
+        color = "#f0ad4e"
+    else:
+        interpretacion = "✅ <strong>Buena distancia de comunicación.</strong> El sistema es eficiente en un entorno implantable controlado."
+        color = "#5cb85c"
+
+    st.markdown(
+        f"<div style='background-color:{color}; padding:15px; border-radius:10px; color:white;'>"
+        f"<b> Interpretación final:</b> {interpretacion}</div>",
+        unsafe_allow_html=True
+    )
+
