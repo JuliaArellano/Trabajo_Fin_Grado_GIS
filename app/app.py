@@ -80,7 +80,7 @@ vistas = {
     "Velocidad del flujo sanguíneo":  "\U0001FA78",
     "Parámetros del Circuito LC": "\u2699",
     "Análisis del Sistema de Comunicación":"\U0001F50D",
-    "Cálculo de Tensiones y Factor de Seguridad": "\U000026D3"
+    "Análisis mecánico del stent": "\U000026D3"
 
 }
 
@@ -677,4 +677,132 @@ elif st.session_state.vista_activa == "Análisis del Sistema de Comunicación":
         f"<b> Interpretación final:</b> {interpretacion}</div>",
         unsafe_allow_html=True
     )
+elif st.session_state.vista_activa == "Análisis mecánico del stent":
+    def tension(p, r_i, r_o, thickness, limite_elastico, FS, flag=True):
+        # Cálculo de tensiones (sin afectar por módulo de Young)
+        sigma_theta = (p * r_i**2) / (r_o**2 - r_i**2)  # Tensión circunferencial
+        sigma_r = -(p * r_i**2) / (r_o**2 - r_i**2)     # Tensión radial
+        
+        # Tensión de von Mises
+        sigma_vm = np.sqrt(0.5 * ((sigma_theta - sigma_r)**2 + sigma_theta**2 + sigma_r**2))
 
+        # Límite admisible
+        limite_admisible = limite_elastico / FS
+
+        if sigma_vm < limite_elastico and sigma_vm < limite_admisible:
+            print("✅ El diseño es MECÁNICAMENTE SEGURO, cumple con el límite elástico y el factor de seguridad.")
+        else:
+            print("❌ PELIGRO: El diseño supera el límite elástico o no cumple con el factor de seguridad.")
+        
+        # Distribución radial para visualizar
+        if flag:
+            r_values = np.linspace(r_i, r_o, 200)
+            
+            # Cálculo de tensiones
+            sigma_theta_f = (p * r_values**2) / (r_o**2 - r_i**2)    # Circunferencial (tracción)
+            sigma_r_f = -(p * r_values**2) / (r_o**2 - r_i**2)        # Radial (compresión)
+            sigma_vm_f = np.sqrt(0.5 * ((sigma_theta_f - sigma_r_f)**2 + sigma_theta_f**2 + sigma_r_f**2))  # von Mises
+            
+            # Conversión a MPa y mm para graficar
+            sigma_theta_f /= 1e6
+            sigma_r_f /= 1e6
+            sigma_vm_f /= 1e6
+            r_mm = r_values * 1000  # mm
+            
+            # Gráfica
+            plt.figure(figsize=(8, 5))
+            plt.plot(r_mm, sigma_theta_f, label='Tensión circunferencial (MPa)', color='blue')
+            plt.plot(r_mm, sigma_r_f, label='Tensión radial (MPa)', color='red')
+            plt.plot(r_mm, sigma_vm_f, label='Tensión von Mises (MPa)', color='green')
+            plt.axhline(0, color='black', linestyle='--', linewidth=0.8)
+            
+            plt.title('Distribución de tensiones a través del espesor del stent')
+            plt.xlabel('Radio desde el interior hacia el exterior (mm)')
+            plt.ylabel('Tensión (MPa)')
+            plt.legend()
+            plt.grid(True)
+            plt.tight_layout()
+            plt.show()
+        return sigma_theta, sigma_r, sigma_vm, limite_admisible
+
+    st.title("🔩 Análisis de Tensiones en el Stent")
+    st.markdown("""
+    <div style='background-color: #f9f9f9; padding: 20px; border-radius: 10px;'>
+    <p>Este modelo estudia las tensiones internas en un stent bajo presión interna, utilizando la teoría de tensiones para un cilindro delgado. 
+    Calcula la tensión circunferencial, la tensión radial y la tensión de von Mises en función del radio interno y externo del stent, 
+    el límite elástico del material y el factor de seguridad. Además, se muestra la distribución de tensiones a lo largo del espesor del stent.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("---")  # Separador visual
+
+    # Interfaz Streamlit
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.subheader("Parámetros de Entrada")
+        tipo = st.selectbox("Tipo de medida", ["En reposo", "En actividad física"])
+        p_input = st.number_input("Presión interna (Pa)", value=13032.64 if tipo == "En reposo" else 13272.02)
+        r_i_input = float(st.text_input("Radio interno (m)", value=1.67e-3))
+        r_o_input = float(st.text_input("Radio externo (m)", value=1.78e-3))
+        limite_elastico_input = st.number_input("Límite elástico (MPa)", value=500)
+        FS_input = st.number_input("Factor de seguridad (FS)", value=2)
+
+    with col2:
+        st.subheader("Resultado del Análisis Mecánico")
+        # Cálculo de tensiones
+        p = p_input
+        r_i = r_i_input
+        r_o = r_o_input
+        thickness = r_o - r_i
+        limite_elastico = limite_elastico_input*1e6
+        FS = FS_input
+        
+        sigma_theta, sigma_r, sigma_vm, limite_admisible = tension(p, r_i, r_o, thickness, limite_elastico, FS, False)
+
+        # Mostrar resultados
+        st.write(f"**- Tensión circunferencial:** {sigma_theta / 1e6:.3f} MPa")
+        st.write(f"**- Tensión radial:** {sigma_r / 1e6:.3f} MPa")
+        st.write(f"**- Tensión de von Mises:** {sigma_vm / 1e6:.3f} MPa")
+        st.write(f"**- Límite máximo admisible:** {limite_admisible / 1e6:.0f} MPa")
+
+        # Gráfica de la distribución de tensiones
+        r_values = np.linspace(r_i, r_o, 200)
+        sigma_theta_f = (p * r_values**2) / (r_o**2 - r_i**2)
+        sigma_r_f = -(p * r_values**2) / (r_o**2 - r_i**2)
+        sigma_vm_f = np.sqrt(0.5 * ((sigma_theta_f - sigma_r_f)**2 + sigma_theta_f**2 + sigma_r_f**2))
+        
+        # Conversión a MPa y mm para graficar
+        sigma_theta_f /= 1e6
+        sigma_r_f /= 1e6
+        sigma_vm_f /= 1e6
+        r_mm = r_values * 1000  # mm
+        
+        # Gráfica
+        plt.figure(figsize=(8, 5))
+        plt.plot(r_mm, sigma_theta_f, label='Tensión circunferencial (MPa)', color='blue')
+        plt.plot(r_mm, sigma_r_f, label='Tensión radial (MPa)', color='red')
+        plt.plot(r_mm, sigma_vm_f, label='Tensión von Mises (MPa)', color='green')
+        plt.axhline(0, color='black', linestyle='--', linewidth=0.8)
+        
+        plt.title('Distribución de tensiones a través del espesor del stent')
+        plt.xlabel('Radio desde el interior hacia el exterior (mm)')
+        plt.ylabel('Tensión (MPa)')
+        plt.legend()
+        plt.grid(True)
+        plt.tight_layout()
+        st.pyplot(plt)
+        
+     # Interpretación visual
+    if sigma_vm < limite_elastico and sigma_vm < limite_admisible:
+        interpretacion = " ✅ <strong> El diseño es MECÁNICAMENTE SEGURO, cumple con el límite elástico y el factor de seguridad."
+        color = "#5cb85c"
+    else:
+        interpretacion = "❌ <strong> PELIGRO: El diseño supera el límite elástico o no cumple con el factor de seguridad."
+        color = "#d9534f"
+
+    st.markdown(
+        f"<div style='background-color:{color}; padding:15px; border-radius:10px; color:white;'>"
+        f"<b>Interpretación final:</b> {interpretacion}</div>",
+        unsafe_allow_html=True
+    )
