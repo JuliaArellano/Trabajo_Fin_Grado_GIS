@@ -8,7 +8,6 @@ from streamlit.components.v1 import html
 import tempfile
 import os
 import math
-import trimesh
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
@@ -268,7 +267,7 @@ if st.session_state.vista_activa == "Inicio":
         """, unsafe_allow_html=True)
         st.markdown("""<br>
         <div style="background-color:#f3e5f5; padding: 20px; border-radius: 12px; text-align: center;">
-            <h4>🔍 Análisis del Sistema de Comunicación</h4>
+            <h3>🔍 Análisis del Sistema de Comunicación</h3>
             <p>Indica la eficiencia del circuito resonante LC y la distancia máxima de comunicación</p>
         </div>
         """, unsafe_allow_html=True)
