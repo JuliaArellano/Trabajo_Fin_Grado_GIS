@@ -678,57 +678,103 @@ elif st.session_state.vista_activa == "Análisis del Sistema de Comunicación":
         unsafe_allow_html=True
     )
 elif st.session_state.vista_activa == "Análisis mecánico del stent":
-    def tension(p, r_i, r_o, thickness, limite_elastico, FS, flag=True):
-        # Cálculo de tensiones (sin afectar por módulo de Young)
-        sigma_theta = (p * r_i**2) / (r_o**2 - r_i**2)  # Tensión circunferencial
-        sigma_r = -(p * r_i**2) / (r_o**2 - r_i**2)     # Tensión radial
-        
-        # Tensión de von Mises
-        sigma_vm = np.sqrt(0.5 * ((sigma_theta - sigma_r)**2 + sigma_theta**2 + sigma_r**2))
+    def tension(p, r_i, r_o, limite_elastico, FS, flag=True):
+        # Geometría
+        t = r_o - r_i  # espesor
+        r_m = (r_i + r_o) / 2  # radio medio
+        if 0.1>t/r_i:
+            print("Uso de la teoria del cilindro delgado.")
+            # Tensión circunferencial (teoría del cilindro delgado)
+            sigma_theta = (p * r_m) / t
 
-        # Límite admisible
-        limite_admisible = limite_elastico / FS
+            # Tensión radial despreciada
+            sigma_r = 0
 
-        if sigma_vm < limite_elastico and sigma_vm < limite_admisible:
-            print("✅ El diseño es MECÁNICAMENTE SEGURO, cumple con el límite elástico y el factor de seguridad.")
+            # Tensión de von Mises (sin tensión axial)
+            sigma_vm = sigma_theta
+
+            # Límite admisible
+            limite_admisible = limite_elastico / FS
+
+            # Evaluación de seguridad
+            if sigma_vm < limite_elastico and sigma_vm < limite_admisible:
+                print("✅ El diseño es MECÁNICAMENTE SEGURO (cilindro delgado).")
+            else:
+                print("❌ PELIGRO: El diseño supera el límite elástico o no cumple con el factor de seguridad.")
+
+            # Visualización
+            if flag:
+                r_values = np.linspace(r_i, r_o, 200)
+                sigma_theta_f = np.full_like(r_values, sigma_theta / 1e6)  # MPa
+                sigma_vm_f = sigma_theta_f  # es igual
+                sigma_r_f = np.zeros_like(r_values)
+
+                r_mm = r_values * 1000  # mm
+
+                plt.figure(figsize=(8, 5))
+                plt.plot(r_mm, sigma_theta_f, label='Tensión circunferencial (MPa)', color='blue')
+                plt.plot(r_mm, sigma_r_f, label='Tensión radial (MPa)', color='red')
+                plt.plot(r_mm, sigma_vm_f, label='Tensión von Mises (MPa)', color='green')
+                plt.axhline(0, color='black', linestyle='--', linewidth=0.8)
+
+                plt.title('Distribución de tensiones (modelo de cilindro delgado)')
+                plt.xlabel('Radio desde el interior hacia el exterior (mm)')
+                plt.ylabel('Tensión (MPa)')
+                plt.legend()
+                plt.grid(True)
+                plt.tight_layout()
+                plt.show()
         else:
-            print("❌ PELIGRO: El diseño supera el límite elástico o no cumple con el factor de seguridad.")
-        
-        # Distribución radial para visualizar
-        if flag:
-            r_values = np.linspace(r_i, r_o, 200)
+            print("Uso de la teoria del cilindro grueso.")
+            # Cálculo de tensiones (sin afectar por módulo de Young)
+            sigma_theta = (p * r_i**2) / (r_o**2 - r_i**2)  # Tensión circunferencial
+            sigma_r = -(p * r_i**2) / (r_o**2 - r_i**2)     # Tensión radial
             
-            # Cálculo de tensiones
-            sigma_theta_f = (p * r_values**2) / (r_o**2 - r_i**2)    # Circunferencial (tracción)
-            sigma_r_f = -(p * r_values**2) / (r_o**2 - r_i**2)        # Radial (compresión)
-            sigma_vm_f = np.sqrt(0.5 * ((sigma_theta_f - sigma_r_f)**2 + sigma_theta_f**2 + sigma_r_f**2))  # von Mises
-            
-            # Conversión a MPa y mm para graficar
-            sigma_theta_f /= 1e6
-            sigma_r_f /= 1e6
-            sigma_vm_f /= 1e6
-            r_mm = r_values * 1000  # mm
-            
-            # Gráfica
-            plt.figure(figsize=(8, 5))
-            plt.plot(r_mm, sigma_theta_f, label='Tensión circunferencial (MPa)', color='blue')
-            plt.plot(r_mm, sigma_r_f, label='Tensión radial (MPa)', color='red')
-            plt.plot(r_mm, sigma_vm_f, label='Tensión von Mises (MPa)', color='green')
-            plt.axhline(0, color='black', linestyle='--', linewidth=0.8)
-            
-            plt.title('Distribución de tensiones a través del espesor del stent')
-            plt.xlabel('Radio desde el interior hacia el exterior (mm)')
-            plt.ylabel('Tensión (MPa)')
-            plt.legend()
-            plt.grid(True)
-            plt.tight_layout()
-            plt.show()
+            # Tensión de von Mises
+            sigma_vm = np.sqrt(0.5 * ((sigma_theta - sigma_r)**2 + sigma_theta**2 + sigma_r**2))
+
+            # Límite admisible
+            limite_admisible = limite_elastico / FS
+
+            if sigma_vm < limite_elastico and sigma_vm < limite_admisible:
+                print("✅ El diseño es MECÁNICAMENTE SEGURO, cumple con el límite elástico y el factor de seguridad.")
+            else:
+                print("❌ PELIGRO: El diseño supera el límite elástico o no cumple con el factor de seguridad.")
+            # Distribución radial para visualizar
+            if flag:
+                r_values = np.linspace(r_i, r_o, 200)
+                
+                # Cálculo de tensiones
+                sigma_theta_f = (p * r_values**2) / (r_o**2 - r_i**2)    # Circunferencial (tracción)
+                sigma_r_f = -(p * r_values**2) / (r_o**2 - r_i**2)        # Radial (compresión)
+                sigma_vm_f = np.sqrt(0.5 * ((sigma_theta_f - sigma_r_f)**2 + sigma_theta_f**2 + sigma_r_f**2))  # von Mises
+                
+                # Conversión a MPa y mm para graficar
+                sigma_theta_f /= 1e6
+                sigma_r_f /= 1e6
+                sigma_vm_f /= 1e6
+                r_mm = r_values * 1000  # mm
+                
+                # Gráfica
+                plt.figure(figsize=(8, 5))
+                plt.plot(r_mm, sigma_theta_f, label='Tensión circunferencial (MPa)', color='blue')
+                plt.plot(r_mm, sigma_r_f, label='Tensión radial (MPa)', color='red')
+                plt.plot(r_mm, sigma_vm_f, label='Tensión von Mises (MPa)', color='green')
+                plt.axhline(0, color='black', linestyle='--', linewidth=0.8)
+                
+                plt.title('Distribución de tensiones a través del espesor del stent')
+                plt.xlabel('Radio desde el interior hacia el exterior (mm)')
+                plt.ylabel('Tensión (MPa)')
+                plt.legend()
+                plt.grid(True)
+                plt.tight_layout()
+                plt.show()
         return sigma_theta, sigma_r, sigma_vm, limite_admisible
 
     st.title("🔩 Análisis de Tensiones en el Stent")
     st.markdown("""
     <div style='background-color: #f9f9f9; padding: 20px; border-radius: 10px;'>
-    <p>Este modelo estudia las tensiones internas en un stent bajo presión interna, utilizando la teoría de tensiones para un cilindro delgado. 
+    <p>Este modelo estudia las tensiones internas en un stent bajo presión interna, utilizando la teoría de tensiones para un cilindro delgado o grueso. 
     Calcula la tensión circunferencial, la tensión radial y la tensión de von Mises en función del radio interno y externo del stent, 
     el límite elástico del material y el factor de seguridad. Además, se muestra la distribución de tensiones a lo largo del espesor del stent.</p>
     </div>
@@ -758,20 +804,30 @@ elif st.session_state.vista_activa == "Análisis mecánico del stent":
         limite_elastico = limite_elastico_input*1e6
         FS = FS_input
         
-        sigma_theta, sigma_r, sigma_vm, limite_admisible = tension(p, r_i, r_o, thickness, limite_elastico, FS, False)
+        sigma_theta, sigma_r, sigma_vm, limite_admisible = tension(p, r_i, r_o, limite_elastico, FS, False)
 
+        if 0.1>thickness/r_i:
+            st.write(f"**- Uso de la teoria de los cilindros delgados")
+        else:
+            st.write(f"**- Uso de la teoria de los cilindros gruesos")
         # Mostrar resultados
         st.write(f"**- Tensión circunferencial:** {sigma_theta / 1e6:.3f} MPa")
         st.write(f"**- Tensión radial:** {sigma_r / 1e6:.3f} MPa")
         st.write(f"**- Tensión de von Mises:** {sigma_vm / 1e6:.3f} MPa")
         st.write(f"**- Límite máximo admisible:** {limite_admisible / 1e6:.0f} MPa")
 
-        # Gráfica de la distribución de tensiones
-        r_values = np.linspace(r_i, r_o, 200)
-        sigma_theta_f = (p * r_values**2) / (r_o**2 - r_i**2)
-        sigma_r_f = -(p * r_values**2) / (r_o**2 - r_i**2)
-        sigma_vm_f = np.sqrt(0.5 * ((sigma_theta_f - sigma_r_f)**2 + sigma_theta_f**2 + sigma_r_f**2))
-        
+        if 0.1>thickness/r_i:
+            r_values = np.linspace(r_i, r_o, 200)
+            sigma_theta_f = np.full_like(r_values, sigma_theta / 1e6)  # MPa
+            sigma_vm_f = sigma_theta_f  # es igual
+            sigma_r_f = np.zeros_like(r_values)
+        else:
+            # Gráfica de la distribución de tensiones
+            r_values = np.linspace(r_i, r_o, 200)
+            sigma_theta_f = (p * r_values**2) / (r_o**2 - r_i**2)
+            sigma_r_f = -(p * r_values**2) / (r_o**2 - r_i**2)
+            sigma_vm_f = np.sqrt(0.5 * ((sigma_theta_f - sigma_r_f)**2 + sigma_theta_f**2 + sigma_r_f**2))
+            
         # Conversión a MPa y mm para graficar
         sigma_theta_f /= 1e6
         sigma_r_f /= 1e6
