@@ -69,6 +69,7 @@ st.markdown(f"""
     <div class="header-bar">
         <div>Visualización del Stent Inteligente</div>
         <div>Julia Arellano Atienza | Ingeniería de la Salud</div>
+        <div>Contacto: jaa1018@alu.ubu.es</div>    
     </div>
 """, unsafe_allow_html=True)
 
