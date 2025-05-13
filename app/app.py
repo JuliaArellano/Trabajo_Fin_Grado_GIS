@@ -605,7 +605,7 @@ elif st.session_state.vista_activa == "Análisis del Sistema de Comunicación":
 
             r_bobina_m = float(st.text_input("Radio de la bobina (m)", value="0.0006"))
             vueltas_bobina = st.number_input("Número de vueltas", value=10)
-            d_m = float(st.text_input("Diámetro del hilo conductor (m)", value="5e-6"))
+            d_m = float(st.text_input("Diámetro del hilo conductor (m)", value="1e-5"))
             L = float(st.text_input("Inductancia total calculada (H)", value="0.06e-6"))
 
         with col2:
