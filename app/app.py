@@ -80,7 +80,7 @@ vistas = {
     "Velocidad del flujo sanguíneo":  "\U0001FA78",
     "Parámetros del Circuito LC": "\u2699",
     "Análisis del Sistema de Comunicación":"\U0001F50D",
-    "Análisis mecánico del stent": "\U000026D3"
+    "Análisis mecánico del stent": "\U0001F529"
 
 }
 
@@ -249,7 +249,7 @@ if st.session_state.vista_activa == "Inicio":
         st.markdown("""<br>
         <div style="background-color:#fce4ec; padding: 20px; border-radius: 12px; text-align: center;">
             <h3>🌡️ Expansión térmica</h3>
-            <p>Simula la expansión con la temperatura.</p>
+            <p>Simula la expansión del Nitinol con la temperatura.</p>
         </div>
         """, unsafe_allow_html=True)
         st.markdown("""<br>
@@ -258,6 +258,27 @@ if st.session_state.vista_activa == "Inicio":
             <p>Calcula la velocidad , la caída de presión y FFR del flujo en el stent .</p>
         </div>
         """, unsafe_allow_html=True)
+    with col2:
+        st.markdown("""
+        <div style="background-color:#fff3e0; padding: 20px; border-radius: 12px; text-align: center;">
+            <h3>⚙️ Parámetros del Circuito LC</h3>
+            <p>Calcula la inductancia, la capacitancia y la frecuencia de resonancia.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        st.markdown("""<br>
+        <div style="background-color:#f3e5f5; padding: 20px; border-radius: 12px; text-align: center;">
+            <h4>🔍 Análisis del Sistema de Comunicación</h4>
+            <p>Indica la eficiencia del circuito resonante LC y la distancia máxima de comunicación</p>
+        </div>
+        """, unsafe_allow_html=True)
+        st.markdown("""<br>
+        <div style="background-color:#D7CCC8; padding: 20px; border-radius: 12px; text-align: center;">
+            <h3> 🔩 Análisis de Tensiones en el Stent</h3>
+            <p> Se calcula las tensiones y se evalúa la seguridad</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+
 elif st.session_state.vista_activa == "Vista 3D del Stent":
     st.title("🧊 Vista 3D del Stent")
     st.markdown("Puedes subir uno o más archivos STL del stent para visualizar su estructura.")
