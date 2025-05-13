@@ -8,6 +8,7 @@ from streamlit.components.v1 import html
 import tempfile
 import os
 import math
+import trimesh
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
