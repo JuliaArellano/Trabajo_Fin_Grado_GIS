@@ -288,7 +288,7 @@ elif st.session_state.vista_activa == "Vista 3D del Stent":
 
     if uploaded_files:
         # Si se suben archivos, mostrar solo esos archivos
-        conjunto={}
+        conjunto=set()
         for uploaded_file in uploaded_files:
             # Cargar y procesar cada archivo STL
             if  uploaded_file.name not in conjunto:
