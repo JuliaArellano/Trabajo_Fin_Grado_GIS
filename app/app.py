@@ -281,23 +281,28 @@ if st.session_state.vista_activa == "Inicio":
 
 
 elif st.session_state.vista_activa == "Vista 3D del Stent":
+    if "nombres_cargados" not in st.session_state:
+        st.session_state.nombres_cargados = set()
+
     st.title("🧊 Vista 3D del Stent")
-    # Subir archivo STL
+
     uploaded_files = st.file_uploader("Sube uno o varios archivos STL", type=["stl"], accept_multiple_files=True)
-    
+
     if uploaded_files:
-        # Si se suben archivos, mostrar solo esos archivos
-        for uploaded_file in uploaded_files:
-            # Cargar y procesar cada archivo STL
-            mesh = cargar_y_procesar_stl(uploaded_file)
-            mostrar_modelo_stl(uploaded_file.name, mesh)
+        for idx, uploaded_file in enumerate(uploaded_files):
+            nombre = uploaded_file.name
+            if nombre in st.session_state.nombres_cargados:
+                st.warning(f"⚠️ Archivo duplicado por nombre: '{nombre}' fue ignorado.")
+            else:
+                st.session_state.nombres_cargados.add(nombre)
+                mesh = cargar_y_procesar_stl(uploaded_file)
+                mostrar_modelo_stl(nombre, mesh, key_extra=str(idx))
     else:
-        # Si no se suben archivos, mostrar los modelos por defecto
         modelos_predeterminados = cargar_modelo_predeterminado()
-        for modelo in modelos_predeterminados:
+        for idx, modelo in enumerate(modelos_predeterminados):
             mesh = trimesh.load(modelo)
-            mostrar_modelo_stl(os.path.basename(modelo), mesh)
-               	
+            mostrar_modelo_stl(os.path.basename(modelo), mesh, key_extra=str(idx))
+                    
 elif st.session_state.vista_activa == "Expansión térmica":
     st.title("🌡️ Aproximación matemática de la expansión térmica del Nitinol")
     st.markdown("""
