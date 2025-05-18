@@ -297,11 +297,12 @@ elif st.session_state.vista_activa == "Vista 3D del Stent":
                 st.session_state.nombres_cargados.add(nombre)
                 mesh = cargar_y_procesar_stl(uploaded_file)
                 mostrar_modelo_stl(nombre, mesh, key_extra=str(idx))
-    else:
+    else:# Subir archivo STL
+        # Si no se suben archivos, mostrar los modelos por defecto
         modelos_predeterminados = cargar_modelo_predeterminado()
-        for idx, modelo in enumerate(modelos_predeterminados):
+        for modelo in modelos_predeterminados:
             mesh = trimesh.load(modelo)
-            mostrar_modelo_stl(os.path.basename(modelo), mesh, key_extra=str(idx))
+            mostrar_modelo_stl(os.path.basename(modelo), mesh)
                     
 elif st.session_state.vista_activa == "Expansión térmica":
     st.title("🌡️ Aproximación matemática de la expansión térmica del Nitinol")
