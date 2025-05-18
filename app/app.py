@@ -284,7 +284,7 @@ elif st.session_state.vista_activa == "Vista 3D del Stent":
     st.title("🧊 Vista 3D del Stent")
     st.markdown("Puedes subir uno o más archivos STL del stent para visualizar su estructura.")
     # Subir archivo STL
-    uploaded_files = st.file_uploader("Sube uno o varios archivos STL", type=["stl"], accept_multiple_files=True)
+    uploaded_files = st.file_uploader(type=["stl"], accept_multiple_files=True)
     
     if uploaded_files:
         # Si se suben archivos, mostrar solo esos archivos
