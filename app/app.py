@@ -294,6 +294,7 @@ elif st.session_state.vista_activa == "Vista 3D del Stent":
             if  uploaded_file.name not in conjunto:
                 mesh = cargar_y_procesar_stl(uploaded_file)
                 mostrar_modelo_stl(uploaded_file.name, mesh)
+                conjunto.add(uploaded_file.name)
             else: 
                  st.warning(f"⚠️ El archivo '{uploaded_file.name}' está duplicado por lo que fue ignorado.")
     else:# Subir archivo STL
