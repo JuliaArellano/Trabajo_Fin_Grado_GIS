@@ -72,6 +72,25 @@ st.markdown(f"""
         <div>Contacto: jaa1018@alu.ubu.es</div>    
     </div>
 """, unsafe_allow_html=True)
+st.markdown("""
+    <style>
+    /* Ícono de hamburguesa para abrir/cerrar el sidebar */
+    button[title="Expand/collapse sidebar"] {
+        background-color: white !important;
+        color: black !important;
+        border-radius: 8px !important;
+        padding: 6px !important;
+        border: none !important;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    /* Cambiar color al pasar el cursor */
+    button[title="Expand/collapse sidebar"]:hover {
+        background-color: #f0f0f0 !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 
 # Diccionario de vistas
 vistas = {
