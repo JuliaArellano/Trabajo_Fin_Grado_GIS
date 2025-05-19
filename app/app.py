@@ -72,6 +72,7 @@ st.markdown(f"""
         <div>Contacto: jaa1018@alu.ubu.es</div>    
     </div>
 """, unsafe_allow_html=True)
+#Pruba barra lateal
 st.markdown("""
     <style>
     /* Ícono de hamburguesa para abrir/cerrar el sidebar */
