@@ -23,7 +23,7 @@ if "vista_activa" not in st.session_state:
 st.markdown(f"""
     <style>
     section[data-testid="stSidebar"] {{
-        background-color: #002B5B;
+        background-color: #006F29;
         padding: 20px 10px;
         position: relative;
     }}
@@ -62,7 +62,7 @@ st.markdown(f"""
         font-size: 14px;
         color: white;
         margin-bottom: 10px;
-        background-color: #002B5B;
+        background-color: #006F29;
         padding: 10px 20px;
     }}
     </style>
@@ -71,25 +71,6 @@ st.markdown(f"""
         <div>Julia Arellano Atienza | Ingeniería de la Salud</div>
         <div>Contacto: jaa1018@alu.ubu.es</div>    
     </div>
-""", unsafe_allow_html=True)
-#Pruba barra lateal
-st.markdown("""
-    <style>
-    /* Ícono de hamburguesa para abrir/cerrar el sidebar */
-    button[title="Expand/collapse sidebar"] {
-        background-color: white !important;
-        color: black !important;
-        border-radius: 8px !important;
-        padding: 6px !important;
-        border: none !important;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    }
-
-    /* Cambiar color al pasar el cursor */
-    button[title="Expand/collapse sidebar"]:hover {
-        background-color: #f0f0f0 !important;
-    }
-    </style>
 """, unsafe_allow_html=True)
 
 
@@ -250,7 +231,7 @@ if st.session_state.vista_activa == "Inicio":
     st.title("Visualización del Stent Inteligente")
 
     st.markdown("""
-    <div style="background-color: #0d47a1; padding: 30px; border-radius: 15px; color: white; text-align: center;">
+    <div style="background-color:#215C43; padding: 30px; border-radius: 15px; color: white; text-align: center;">
         <h1>BIENVENIDO</h1>
         <p style="font-size:20px;">Explora el proyecto del <b>Stent Inteligente de Nitinol</b> de manera interactiva.</p><br>
     </div>
