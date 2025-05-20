@@ -52,7 +52,7 @@ st.markdown(f"""
         background-color: #1A73E8;
     }}
     .sidebar-button.selected {{
-        background-color: #FF4B4B;
+        background-color: #544BFF;
         color: white;
     }}
     .header-bar {{
