@@ -59,7 +59,7 @@ st.markdown(f"""
         transition: background-color 0.2s ease;
     }}
     .sidebar-button:hover {{
-        background-color: #1A73E8;
+        background-color: var(--primary-color);
     }}
     .sidebar-button.selected {{
         background-color: #544BFF;
