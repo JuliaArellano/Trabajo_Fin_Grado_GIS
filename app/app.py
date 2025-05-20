@@ -13,7 +13,7 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
 # Configuración general
-st.set_page_config(page_title="Visualización del Stent Inteligente", layout="wide", theme={"primaryColor": "#FFFFFF", "base":"light"})
+st.set_page_config(page_title="Visualización del Stent Inteligente", layout="wide")
 
 # Inicializa 'vista_activa' si no existe
 if "vista_activa" not in st.session_state:
