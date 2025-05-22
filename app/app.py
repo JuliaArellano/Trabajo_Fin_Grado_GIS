@@ -176,7 +176,7 @@ def expansion(tipo, T_min, T_max, D_inicial, As, Af, alpha_m, alpha_a):
     return T, D
     # Función para calcular el flujo sanguíneo
 # Función para calcular el flujo sanguíneo
-def flujo(Q, R_stent, L, mu, P_entrada):
+def flujo(Q, R_stent, L, mu, P_entrada, flag=True):
     delta_P = (8 * mu * L * Q) / (np.pi * R_stent**4)  # Caída de presión
     v_prom = Q / (np.pi * R_stent**2)  # Velocidad promedio 
     P_salida = P_entrada - delta_P  # Presión en salida
@@ -214,7 +214,10 @@ def flujo(Q, R_stent, L, mu, P_entrada):
     plt.grid(True)
     plt.gca().invert_yaxis()  # Invertir eje Y para que el centro esté arriba
     plt.show()
-    return delta_P, v_prom, P_salida, v, r, v_max,ffr 
+    if flag:
+        return delta_P, v_prom, P_salida, v, r, v_max,ffr 
+    else:
+        return P_salida
 def calcular_inductancia(r_cm, l_cm, N):
     L_uH = (r_cm**2 * N**2) / (9 * r_cm + 10 * l_cm)
     return L_uH * 1e-6  # Convertir a Henrios
@@ -390,7 +393,10 @@ elif st.session_state.vista_activa == "Velocidad del flujo sanguíneo":
         st.subheader("Resultado del Flujo Sanguíneo")
         delta_P, v_prom, P_salida, v, r, v_max, ffr = flujo( Q, R_stent, L, mu,P_entrada)
         resultados = st.empty()  # Crear un espacio vacío
-
+        if tipo == "En reposo":
+            st.session_state.P_salida_reposo = P_salida
+        else:
+            st.session_state.P_salida_actividad = P_salida
         # Actualizar la caja con los resultados
         resultados.markdown(
             f"""
@@ -505,10 +511,10 @@ elif st.session_state.vista_activa == "Parámetros del Circuito LC":
     L_bobina = calcular_inductancia(r_bobina_cm, l_bobina_cm, vueltas_bobina)
     # Calcular la inductancia total en paralelo
     L_total = 1 / (1/L_bobina + 1/L_bobina)
-
+    st.session_state.L_total=L_total
     # Calcular capacitancia
     C_total = calcular_capacitancia(A_electrodo_m2, d_poliamida_m, num_pares_electrodos)
-
+    st.session_state.C_total=C_total
     # Calcular frecuencia de resonancia
     f_resonancia = calcular_frecuencia_resonancia(L_total, C_total)
 
@@ -598,7 +604,11 @@ elif st.session_state.vista_activa == "Análisis del Sistema de Comunicación":
         </div>
     """, unsafe_allow_html=True)
 
+    if "L_total" not in st.session_state:
+        st.session_state.L_total = 0.06* 1e-6
 
+    if "C_total" not in st.session_state:
+        st.session_state.C_total = 57.12e-12
 
     tab1, tab2 = st.tabs(["⚙️ Parámetros Internos", "📡 Parámetros Externos"])
 
@@ -612,7 +622,7 @@ elif st.session_state.vista_activa == "Análisis del Sistema de Comunicación":
             r_bobina_m = float(st.text_input("Radio de la bobina (m)", value="0.0006"))
             vueltas_bobina = st.number_input("Número de vueltas", value=10)
             d_m = float(st.text_input("Diámetro del hilo conductor (m)", value="1e-5"))
-            L = float(st.text_input("Inductancia total calculada (H)", value="0.06e-6"))
+            
 
         with col2:
             longitud_hilo = 2 * math.pi * r_bobina_m * vueltas_bobina
@@ -621,19 +631,19 @@ elif st.session_state.vista_activa == "Análisis del Sistema de Comunicación":
             R_total = 1 / (1/R + 1/R)
 
             C_fija = 57.12e-12  # 57.12 pF
-            Q = (1 / R_total) * math.sqrt(L / C_fija)
+            Q = (1 / R_total) * math.sqrt(st.session_state.L_total / st.session_state.C_total )
 
             st.markdown("""
             <div style="background-color:#f1f1f1; padding: 15px; border-radius: 10px;">
                 <h4 style="margin-top: 0;">🧾 Resultados:</h4>
                 <ul>
                     <li><strong>Inductancia:</strong> {:.2f} µH</li>
-                    <li><strong>Capacitancia:</strong> 57.12 pF</li>
+                    <li><strong>Capacitancia:</strong> {:.2f} pF</li>
                     <li><strong>Resistencia interna:</strong> {:.2f} Ω</li>
                     <li><strong>Q interno:</strong> {:.2f}</li>
                 </ul>
             </div>
-            """.format(L * 1e6, R_total, Q), unsafe_allow_html=True)
+            """.format(st.session_state.L_total * 1e6, st.session_state.C_total *1e12, R_total, Q), unsafe_allow_html=True)
 
     with tab2:
         col3, col4 = st.columns([2, 1])
@@ -796,14 +806,22 @@ elif st.session_state.vista_activa == "Análisis mecánico del stent":
     """, unsafe_allow_html=True)
 
     st.markdown("---")  # Separador visual
+    # Inicializar valores por defecto si no existen aún
+    if "P_salida_reposo" not in st.session_state:
+        st.session_state.P_salida_reposo = 13272.02  
+
+    if "P_salida_actividad" not in st.session_state:
+        st.session_state.P_salida_actividad = 13032.65
 
     # Interfaz Streamlit
     col1, col2 = st.columns(2)
-
+    
     with col1:
+        
         st.subheader("Parámetros de Entrada")
         tipo = st.selectbox("Tipo de medida", ["En reposo", "En actividad física"])
-        p_input = st.number_input("Presión interna (Pa)", value=13032.64 if tipo == "En reposo" else 13272.02)
+        p_input = st.number_input("Presión interna (Pa)", value= st.session_state.P_salida_reposo
+                                  if tipo == "En reposo" else st.session_state.P_salida_actividad)
         r_i_input = float(st.text_input("Radio interno (m)", value=1.67e-3))
         r_o_input = float(st.text_input("Radio externo (m)", value=1.78e-3))
         limite_elastico_input = st.number_input("Límite elástico (MPa)", value=500)
