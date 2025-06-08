@@ -608,7 +608,7 @@ elif st.session_state.vista_activa == "Análisis del Sistema de Comunicación":
         st.session_state.L_total = 0.06* 1e-6
 
     if "C_total" not in st.session_state:
-        st.session_state.C_total = 57.12e-12
+        st.session_state.C_total = 62.47e-12
 
     tab1, tab2 = st.tabs(["⚙️ Parámetros Internos", "📡 Parámetros Externos"])
 
