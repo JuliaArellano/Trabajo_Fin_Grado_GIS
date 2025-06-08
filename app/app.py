@@ -97,6 +97,16 @@ for vista, icono in vistas.items():
         
 # Funciones utilizadas 
 def cargar_modelo_predeterminado():
+    """
+    Carga las rutas absolutas de los archivos STL predeterminados utilizados en la aplicación.
+
+    Los archivos deben estar ubicados en el mismo directorio que el script principal.
+
+    Returns:
+        list: Lista con las rutas absolutas de los modelos STL:
+            - modelo_1: "stent_final.stl"
+            - modelo_2: "Sensor_completo.stl"
+    """
     base_path = os.path.dirname(os.path.abspath(__file__))  # Ruta de app.py
     # Los archivos están en la misma carpeta, así que directamente los nombramos
     modelo_1 = os.path.join(base_path, "stent_final.stl")
@@ -104,6 +114,18 @@ def cargar_modelo_predeterminado():
 
     return [modelo_1, modelo_2]
 def cargar_y_procesar_stl(uploaded_file):
+    """
+    Carga un archivo STL desde una entrada cargada por el usuario y lo convierte en un objeto de malla 3D.
+
+    El archivo es almacenado temporalmente en el sistema para que pueda ser leído por `trimesh`.
+
+    Parámetros:
+        uploaded_file (FileStorage): Archivo STL cargado por el usuario (por ejemplo, desde un formulario web).
+
+    Returns:
+        trimesh.Trimesh: Objeto de malla 3D cargado a partir del archivo STL.
+    """
+
     with tempfile.NamedTemporaryFile(delete=False, suffix=".stl") as tmp:
         tmp.write(uploaded_file.read())
         tmp.flush()
@@ -111,48 +133,84 @@ def cargar_y_procesar_stl(uploaded_file):
 
     return mesh
 def mostrar_modelo_stl(nombre_archivo, mesh):
-        vertices = mesh.vertices
-        faces = mesh.faces
-    
-        fig = go.Figure(data=[
-            go.Mesh3d(
-                x=vertices[:, 0],
-                y=vertices[:, 1],
-                z=vertices[:, 2],
-                i=faces[:, 0],
-                j=faces[:, 1],
-                k=faces[:, 2],
-                color='#B0B0B0',  # Gris metálico
-                opacity=1.0,
-                flatshading=True,
-                lighting=dict(
-                    ambient=0.5,
-                    diffuse=0.5,
-                    specular=0.2,
-                    roughness=0.9,
-                    fresnel=0.0
-                ),
-                lightposition=dict(x=100, y=200, z=0)
-            )
-        ])
-    
-        # Actualizar el layout para permitir interacción con la cámara, pero ocultar los ejes
-        fig.update_layout(
-            title=f"Modelo: {nombre_archivo}",
-            scene=dict(
-                aspectmode='data',
-                xaxis=dict(visible=False),  # Ejes ocultos
-                yaxis=dict(visible=False),  # Ejes ocultos
-                zaxis=dict(visible=False),  # Ejes ocultos
-                camera=dict(eye=dict(x=2, y=2, z=2))  # Inicia la cámara en una buena posición para rotar
+    """
+    Visualiza una malla 3D (STL) usando Plotly en una aplicación de Streamlit.
+
+    La función toma los vértices y caras de la malla proporcionada y genera una visualización
+    interactiva.
+
+    Parámetros:
+        nombre_archivo (str): Nombre del archivo STL (para el título del gráfico).
+        mesh (trimesh.Trimesh): Objeto de malla 3D cargado con trimesh.
+
+    Returns:
+        None: Muestra el modelo en la interfaz de Streamlit usando Plotly.
+    """
+    vertices = mesh.vertices
+    faces = mesh.faces
+
+    fig = go.Figure(data=[
+        go.Mesh3d(
+            x=vertices[:, 0],
+            y=vertices[:, 1],
+            z=vertices[:, 2],
+            i=faces[:, 0],
+            j=faces[:, 1],
+            k=faces[:, 2],
+            color='#B0B0B0',  # Gris metálico
+            opacity=1.0,
+            flatshading=True,
+            lighting=dict(
+                ambient=0.5,
+                diffuse=0.5,
+                specular=0.2,
+                roughness=0.9,
+                fresnel=0.0
             ),
-            margin=dict(l=0, r=0, t=30, b=0),
-            height=700
+            lightposition=dict(x=100, y=200, z=0)
         )
-        st.plotly_chart(fig, use_container_width=True)
-    
+    ])
+
+    # Actualizar el layout para permitir interacción con la cámara, pero ocultar los ejes
+    fig.update_layout(
+        title=f"Modelo: {nombre_archivo}",
+        scene=dict(
+            aspectmode='data',
+            xaxis=dict(visible=False),  # Ejes ocultos
+            yaxis=dict(visible=False),  # Ejes ocultos
+            zaxis=dict(visible=False),  # Ejes ocultos
+            camera=dict(eye=dict(x=2, y=2, z=2))  # Inicia la cámara en una buena posición para rotar
+        ),
+        margin=dict(l=0, r=0, t=30, b=0),
+        height=700
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
     # Función de expansión
-def expansion(tipo, T_min, T_max, D_inicial, As, Af, alpha_m, alpha_a): 
+def expansion(T_min, T_max, D_inicial, As, Af, alpha_m, alpha_a): 
+    """
+    Simula  la expansión térmica de un stent de Nitinol en función de la temperatura.
+
+    El comportamiento del material se divide en tres zonas según la temperatura:
+    - Por debajo de As: fase martensítica (expansión con alpha_m).
+    - Entre As y Af: fase de transición (mezcla de fases, expansión interpolada).
+    - Por encima de Af: fase austenítica (expansión con alpha_a).
+
+
+    Parámetros:
+        T_min (float): Temperatura mínima del rango de análisis (°C).
+        T_max (float): Temperatura máxima del rango de análisis (°C).
+        D_inicial (float): Valor inicial de la dimensión a T_min (en mm).
+        As (float): Temperatura de inicio de la transformación de fase (°C).
+        Af (float): Temperatura final de la transformación de fase (°C).
+        alpha_m (float): Coeficiente de expansión térmica en fase martensítica (1/°C).
+        alpha_a (float): Coeficiente de expansión térmica en fase austenítica (1/°C).
+
+    Returns:
+        T (np.ndarray): Array de temperaturas simuladas (°C).
+        D (np.ndarray): Array de dimensiones resultantes (mm) correspondientes a T.
+    
+    """
     T = np.linspace(T_min, T_max, 500)
     D = np.zeros_like(T)
     for i, temp in enumerate(T):
@@ -176,7 +234,28 @@ def expansion(tipo, T_min, T_max, D_inicial, As, Af, alpha_m, alpha_a):
     return T, D
     # Función para calcular el flujo sanguíneo
 # Función para calcular el flujo sanguíneo
-def flujo(Q, R_stent, L, mu, P_entrada, flag=True):
+def flujo(Q, R_stent, L, mu, P_entrada):
+    """
+    Calcula el perfil de velocidad del flujo sanguíneo en un stent utilizando la ley de Poiseuille,
+    así como parámetros hemodinámicos relevantes como caída de presión, velocidad promedio,
+    presión de salida y el índice FFR.
+
+    Parámetros:
+        Q (float): Flujo volumétrico (m³/s).
+        R_stent (float): Radio interno del stent (m).
+        L (float): Longitud del stent (m).
+        mu (float): Viscosidad dinámica de la sangre (Pa·s).
+        P_entrada (float): Presión en la entrada del stent (Pa).
+
+    Returns:
+        delta_P (float): Caída de presión a lo largo del stent (Pa).
+        v_prom (float): Velocidad promedio del flujo (m/s).
+        P_salida (float): Presión al final del stent (Pa).
+        v (np.ndarray): Perfil de velocidad a lo largo del radio (m/s).
+        r (np.ndarray): Coordenadas radiales (m).
+        v_max (float): Velocidad máxima (en el centro del stent) (m/s).
+        ffr (float): Índice de reserva fraccional de flujo (P_salida / P_entrada).
+    """
     delta_P = (8 * mu * L * Q) / (np.pi * R_stent**4)  # Caída de presión
     v_prom = Q / (np.pi * R_stent**2)  # Velocidad promedio 
     P_salida = P_entrada - delta_P  # Presión en salida
@@ -214,21 +293,51 @@ def flujo(Q, R_stent, L, mu, P_entrada, flag=True):
     plt.grid(True)
     plt.gca().invert_yaxis()  # Invertir eje Y para que el centro este arriba
     plt.show()
-    if flag:
-        return delta_P, v_prom, P_salida, v, r, v_max,ffr 
-    else:
-        return P_salida
+    
+    return delta_P, v_prom, P_salida, v, r, v_max,ffr 
 def calcular_inductancia(r_cm, l_cm, N):
+    """
+    Calcula la inductancia aproximada de una bobina.
+
+    Parámetros:
+        r_cm (float): Radio de la bobina en centímetros (cm).
+        l_cm (float): Longitud de la bobina en centímetros (cm).
+        N (int): Número de espiras (vueltas) de la bobina.
+
+    Returns:
+        float: Inductancia en Henrios (H).
+    """
     L_uH = (r_cm**2 * N**2) / (9 * r_cm + 10 * l_cm)
     return L_uH * 1e-6  # Convertir a Henrios
 
 def calcular_capacitancia(A_electrodo_m2, d_poliimida_m, num_pares_electrodos):
+    """
+    Calcula la capacitancia total del sensor.
+
+    Parámetros:
+        A_electrodo_m2 (float): Área de un electrodo en metros cuadrados (m²).
+        d_poliimida_m (float): Espesor de la capa de poliimida entre electrodos (m).
+        num_pares_electrodos (int): Número de pares de electrodos en el sistema.
+
+    Returns:
+        float: Capacitancia total del sistema en Faradios (F).
+    """
     epsilon_0 = 8.854e-12  # F/m (permitividad del vacío)
     epsilon_r_poliimida = 3.5  # Permitividad relativa de la poliimida
     C_par = epsilon_0 * epsilon_r_poliimida * A_electrodo_m2 / d_poliimida_m
     return num_pares_electrodos * C_par * 2
 
 def calcular_frecuencia_resonancia(L, C):
+    """
+    Calcula la frecuencia de resonancia de un circuito LC.
+
+    Parámetros:
+        L (float): Inductancia en Henrios (H).
+        C (float): Capacitancia en Faradios (F).
+
+    Returns:
+        float: Frecuencia de resonancia en Hertz (Hz).
+    """
     return 1 / (2 * np.pi * np.sqrt(L * C))
 if st.session_state.vista_activa == "Inicio":
     st.title("Visualización del Stent Inteligente")
@@ -344,7 +453,7 @@ Este modelo estima el cambio de tamaño del material en función de la temperatu
 
     with col2:
         st.subheader("Resultado de la Expansión")
-        T, D = expansion(tipo, T_min, T_max, D_inicial, As, Af, 6.6e-6, 11e-6)
+        T, D = expansion(T_min, T_max, D_inicial, As, Af, 6.6e-6, 11e-6)
 
         # Color por tipo
         color_linea = 'blue' if tipo == "diámetro" else 'green'
@@ -433,6 +542,25 @@ elif st.session_state.vista_activa == "Velocidad del flujo sanguíneo":
 
     st.subheader("Evaluación de la estenosis en el stent")
     def evaluar_estenosis(Q_reposo, Q_actividad, R_stent_original, L, mu, P_entrada):
+        """
+        Evalúa el efecto de diferentes niveles de reducción del radio sobre el flujo
+        sanguíneo en un stent, comparando las condiciones de reposo y actividad.
+
+        Se simulan perfiles de velocidad con el modelo de Poiseuille para 4 niveles de oclusión
+        (0%, 25%, 50%, 75%), y se calcula el índice FFR (o iFR) para cada uno. Los resultados
+        se grafican para visualizar el impacto sobre el flujo y el gradiente de presión.
+
+        Parámetros:
+            Q_reposo (float): Flujo volumétrico en estado de reposo (m³/s).
+            Q_actividad (float): Flujo volumétrico en estado de actividad (m³/s).
+            R_stent_original (float): Radio interno original del stent (sin oclusión) (m).
+            L (float): Longitud del stent (m).
+            mu (float): Viscosidad dinámica de la sangre (Pa·s).
+            P_entrada (float): Presión en la entrada del stent (Pa).
+
+        Returns:
+            None: La función no retorna datos; muestra dos gráficos comparativos (reposo y actividad).
+    """
         reducciones = [1.0, 0.75, 0.50, 0.3]  # 100%, 75%, 50% del radio original
         colores = ['blue', 'orange', 'red',"purple"]
         etiquetas = ['Sin oculusión ', '25% de oclusión', '50% de oclusión',"75% de oclusión"]
@@ -717,6 +845,24 @@ elif st.session_state.vista_activa == "Análisis del Sistema de Comunicación":
     )
 elif st.session_state.vista_activa == "Análisis mecánico del stent":
     def tension(p, r_i, r_o, limite_elastico, FS, flag=True):
+        """
+        Calcula las tensiones mecánicas en un cilindro sometido a presión interna, utilizando 
+        la teoría del cilindro delgado o grueso según la relación espesor-radio.
+
+        Parámetros:
+            p (float): Presión interna aplicada (Pa).
+            r_i (float): Radio interior del cilindro (m).
+            r_o (float): Radio exterior del cilindro (m).
+            limite_elastico (float): Límite elástico del material (Pa).
+            FS (float): Factor de seguridad deseado.
+            flag (bool, opcional): Si True, se muestra el gráfico de distribución de tensiones.
+
+        Returns:
+            sigma_theta (float): Tensión circunferencial máxima (Pa).
+            sigma_r (float): Tensión radial en el punto crítico (Pa).
+            sigma_vm (float): Tensión equivalente de von Mises (Pa).
+            limite_admisible (float): Límite de tensión admisible (Pa).
+        """
         t = r_o - r_i
         r_m = (r_i + r_o) / 2
         if t / r_i < 0.1:
