@@ -212,7 +212,7 @@ def flujo(Q, R_stent, L, mu, P_entrada, flag=True):
     plt.title('Perfil de Velocidad de Poiseuille en el Stent')
     plt.legend()
     plt.grid(True)
-    plt.gca().invert_yaxis()  # Invertir eje Y para que el centro esté arriba
+    plt.gca().invert_yaxis()  # Invertir eje Y para que el centro este arriba
     plt.show()
     if flag:
         return delta_P, v_prom, P_salida, v, r, v_max,ffr 
@@ -222,10 +222,10 @@ def calcular_inductancia(r_cm, l_cm, N):
     L_uH = (r_cm**2 * N**2) / (9 * r_cm + 10 * l_cm)
     return L_uH * 1e-6  # Convertir a Henrios
 
-def calcular_capacitancia(A_electrodo_m2, d_poliamida_m, num_pares_electrodos):
+def calcular_capacitancia(A_electrodo_m2, d_poliimida_m, num_pares_electrodos):
     epsilon_0 = 8.854e-12  # F/m (permitividad del vacío)
-    epsilon_r_poliamida = 3.2  # Permitividad relativa de la poliamida
-    C_par = epsilon_0 * epsilon_r_poliamida * A_electrodo_m2 / d_poliamida_m
+    epsilon_r_poliimida = 3.5  # Permitividad relativa de la poliimida
+    C_par = epsilon_0 * epsilon_r_poliimida * A_electrodo_m2 / d_poliimida_m
     return num_pares_electrodos * C_par * 2
 
 def calcular_frecuencia_resonancia(L, C):
@@ -502,8 +502,8 @@ elif st.session_state.vista_activa == "Parámetros del Circuito LC":
             st.markdown("### ⚡ Cálculo de la Capacitancia")
             A_electrodo_m2_input = st.text_input("Área de los electrodos (m²)", value="1.05e-7")
             A_electrodo_m2 = float(A_electrodo_m2_input)
-            d_poliamida_m_inicial = st.text_input("Grosor de la capa de poliamida (m)", value="5e-6")
-            d_poliamida_m = float(d_poliamida_m_inicial)
+            d_poliimida_m_inicial = st.text_input("Grosor de la capa de poliimida (m)", value="5e-6")
+            d_poliimida_m = float(d_poliimida_m_inicial)
             num_pares_electrodos = st.number_input("Número de pares de electrodos", value  = 48)
     st.markdown("### 📊 Resultados")
 
@@ -513,7 +513,7 @@ elif st.session_state.vista_activa == "Parámetros del Circuito LC":
     L_total = 1 / (1/L_bobina + 1/L_bobina)
     st.session_state.L_total=L_total
     # Calcular capacitancia
-    C_total = calcular_capacitancia(A_electrodo_m2, d_poliamida_m, num_pares_electrodos)
+    C_total = calcular_capacitancia(A_electrodo_m2, d_poliimida_m, num_pares_electrodos)
     st.session_state.C_total=C_total
     # Calcular frecuencia de resonancia
     f_resonancia = calcular_frecuencia_resonancia(L_total, C_total)
