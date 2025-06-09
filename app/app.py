@@ -645,7 +645,7 @@ elif st.session_state.vista_activa == "Parámetros del Circuito LC":
     st.session_state.C_total=C_total
     # Calcular frecuencia de resonancia
     f_resonancia = calcular_frecuencia_resonancia(L_total, C_total)
-
+    st.session_state.f_resonancia=f_resonancia
     # Mostrar resultados en un cuadro con puntos
     st.markdown(f"""
         <div style="background-color:#f9f9f9; padding: 15px; border-radius: 5px;">
@@ -737,7 +737,8 @@ elif st.session_state.vista_activa == "Análisis del Sistema de Comunicación":
 
     if "C_total" not in st.session_state:
         st.session_state.C_total = 62.47e-12
-
+    if " f_resonancia" not in st.session_state:
+        st.session_state.f_resonancia= 82.75e6
     tab1, tab2 = st.tabs(["⚙️ Parámetros Internos", "📡 Parámetros Externos"])
 
     with tab1:
@@ -779,11 +780,11 @@ elif st.session_state.vista_activa == "Análisis del Sistema de Comunicación":
         with col3:
             L_externa = float(st.text_input("Inductancia externa (H)", value="4e-6"))
             R_externa = st.number_input("Resistencia externa (Ω)", value=25.0)
-            radio_bobina_ext = st.number_input("Radio de la bobina emisora externa (m)", value=0.035)
+            radio_bobina_ext = float(st.text_input("Radio de la bobina emisora externa (m)", value="0.035"))
 
         with col4:
 
-            C_externa = 1 / ((2 * math.pi * 86.54e6)**2 * L_externa)
+            C_externa = 1 / ((2 * math.pi *st.session_state.f_resonancia)**2 * L_externa)
             Q_externa = (1 / R_externa) * math.sqrt(L_externa / C_externa)
 
             st.markdown("""
