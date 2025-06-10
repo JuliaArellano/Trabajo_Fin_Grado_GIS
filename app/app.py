@@ -563,7 +563,7 @@ elif st.session_state.vista_activa == "Velocidad del flujo sanguíneo":
     """
         reducciones = [1.0, 0.75, 0.50, 0.3]  # 100%, 75%, 50% del radio original
         colores = ['blue', 'orange', 'red',"purple"]
-        etiquetas = ['Sin oculusión ', '25% de oclusión', '50% de oclusión',"75% de oclusión"]
+        etiquetas = ['Sin oclusión ', '25% de oclusión', '50% de oclusión',"75% de oclusión"]
         
         estados = [('Reposo', Q_reposo), ('Actividad', Q_actividad)]
         
