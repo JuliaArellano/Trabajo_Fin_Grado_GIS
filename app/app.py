@@ -819,7 +819,7 @@ elif st.session_state.vista_activa == "Análisis del Sistema de Comunicación":
         <ul style="font-size:16px;">
             <li><strong>Q interno:</strong> {Q:.2f}</li>
             <li><strong>Q externo:</strong> {Q_externa:.2f}</li>
-            <li><strong>Distancia máxima estimada:</strong> <strong>{d_max*100:.2f} cm</strong></li>
+            <li><strong>Distancia máxima estimada:</strong> <strong>{d_max*100:.0f} cm</strong></li>
         </ul>
         <p style="font-size:16px;">
         </p>
