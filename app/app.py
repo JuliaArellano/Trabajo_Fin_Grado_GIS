@@ -745,6 +745,14 @@ elif st.session_state.vista_activa == "Análisis del Sistema de Comunicación":
         col1, col2 = st.columns([2, 1])
 
         with col1:
+            st.markdown("""
+                <div style='background-color: #f9f9f9; padding: 20px; border-radius: 10px;'>
+                    <p style='font-size:16px;'>
+                    Los <strong>parámetros que se presentan a continuación</strong> se utilizan para calcular la <strong>resistencia eléctrica de las bobinas</strong>. Por otro lado, los valores de <strong>capacitancia</strong> e <strong>inductancia</strong> fueron obtenidos previamente en la sección anterior. A partir de todos estos parámetros, se calcula el <strong>factor de calidad (Q)</strong>.
+                    </p>
+                </div>
+                """, unsafe_allow_html=True)
+
             tipo = st.selectbox("Material de las bobinas:", ["Oro", "Otro"])
             resistividad = 2.44e-8 if tipo == "Oro" else st.number_input("Resistividad (ohm·m)", value=2.44e-8)
 
@@ -778,6 +786,14 @@ elif st.session_state.vista_activa == "Análisis del Sistema de Comunicación":
         col3, col4 = st.columns([2, 1])
 
         with col3:
+            st.markdown("""
+                <div style='background-color: #f9f9f9; padding: 20px; border-radius: 10px; margin-top: 15px;'>
+                    <p style='font-size:16px;'>
+                    Los <strong>siguientes parámetros definidos corresponden al parche receptor</strong>, con los cuales se calcula el <strong>factor de calidad (Q)</strong> del circuito externo.
+                    </p>
+                </div>
+                """, unsafe_allow_html=True)
+
             L_externa = float(st.text_input("Inductancia externa (H)", value="4e-6"))
             R_externa = st.number_input("Resistencia externa (Ω)", value=25.0)
             radio_bobina_ext = float(st.text_input("Radio de la bobina emisora externa (m)", value="0.035"))
