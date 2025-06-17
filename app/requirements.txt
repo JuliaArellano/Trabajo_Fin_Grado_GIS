@@ -4,4 +4,4 @@ streamlit
 numpy
 plotly
 trimesh
-pythreejs
+
