@@ -1,61 +1,42 @@
-STENT
-Estructura del Stent
-•	Material Principal: El stent estará hecho de nitinol, una aleación con memoria de forma que permite su expansión controlada dentro de la arteria.
-•	Dimensiones:
--	Diámetro expandido: 3.5 mm 
--	Longitud: 8 - 30 mm (aproximadamente 20)
--	Espesor del hilo: 0.1 mm diámetro
--	Tamaño del paso : 10 mm
-Sensor 
-El sensor capacitivo se coloca en la superficie interna del stent para detectar cambios en la presión y la rigidez arterial.
-Estructura del sensor 
-•	Capas : 
-o	Capa inferior de Poliimida (PI) → Base dieléctrica. 5 - 10 μm
--	Actúa como soporte del sensor.
--	Debe ser flexible y biocompatible.
+Resumen de Parámetros Técnicos del Stent Inteligente
 
-o	Electrodos de Nanopartículas de Plata (AgNP) → Placas del sensor. 0.5 - 1 μm
--	Son las pistas interdigitadas que detectan la presión.
--	Cuanto más delgados, mayor flexibilidad.
+1. Estructura del Stent
+- Diámetro expandido: 3.55 mm
+- Longitud total: 20 mm
+- Espesor del hilo: 0.1 mm
+- Tamaño del paso: 10 mm
+- Número de hilos: 6
+- Material: Nitinol
 
-o	Encapsulación con PDMS (Silicona) → Protección del sensor y aislamiento eléctrico. 1- 5 μm 
--	Protege contra fluidos y daños mecánicos.
--	Puede ser muy fina sin afectar la detección.
--	
-•	Estructura del sensor
--	Espesor total del sensor: 16 μm.
--	Tamaño : 1mm * 15 mm (70-80% stent) 
+2. Sensor Capacitivo
+- Ubicación: Superficie interna del stent
+- Dimensiones: 1.05 mm × 15 mm
+- Espesor total del sensor: 16 μm
+- Número de pares de electrodos: 48
+- Dimensiones de los electrodos: 350 μm × 150 μm
+- Separación entre electrodos: 5 μm
 
-•	Dimensiones de los electrodos interdigitados:
+Capas del Sensor Capacitivo
+- Capa superior: Poliimida (PI), 2.5 μm
+- Electrodo superior: Nanopartículas de plata (AgNP), 1 μm
+- Capa intermedia: Poliimida (PI), 5 μm (2 × 2.5 μm)
+- Electrodo inferior: Nanopartículas de plata (AgNP), 1 μm
+- Capa inferior: Poliimida (PI), 2.5 μm
+- Recubrimiento externo: PDMS, 4 μm
 
--	Ancho de cada electrodo: 50 - 100 μm.
--	Separación entre los electrodos: 50 - 100 μm.
--	Número de pares de electrodos: 5 a 10 pares por mm.
-MÉTODO DE COMUNICACIÓN
-Se va a utilizar dos bobinas emisoras que mediante inducción electromagnética van a captura la energía externa y van a trasmitir los datos a la bobina receptora.
-Sin baterías. Sin cables. 100% inalámbrico.
-•	Ubicación y Diseño de la Bobina
-o	Se va a colocar una en cada extremo .
-o	Se imprime directamente sobre el Nitinol y posteriormente se van a recubir Parylene C (0.5 - 2 μm) para proteger la bobina contra la degradación.
-•	Dimensiones Típicas:
--	Diámetro de la bobina: 0.25 mm
--	Número de vueltas: 10 vueltas
-•	Espesor del material conductor (oro o plata): 1 μm
-•	Cómo Funciona la Bobina en el Stent
-	- La bobina externa genera un campo electromagnético a 13.56 MHz.
-- La bobina impresa en el stent capta esa energía por inducción electromagnética.
-- La energía se convierte en corriente eléctrica que alimenta el sensor.
-- La bobina del stent modula la señal de presión detectada y la retransmite a la bobina externa.
-	Solo ondas electromagnéticas.
+3. Sistema de Comunicación (Circuito LC)
+- Ubicación: Extremos del stent
+- Material conductor: Oro
+- Diámetro exterior de la bobina: 1.2 mm
+- Número de vueltas: 10
+- Espesor del hilo: 10 μm
+- Longitud de la bobina: 2.5 cm
 
-•	Frecuencia de Operación y Acoplamiento
-Frecuencia recomendada: 13.56 MHz (banda ISM, permitida para dispositivos médicos). Ya que : 
-
--No es absorbida demasiado por los tejidos biológicos.
--Permite buena transmisión de energía y datos.
-- Cumple con regulaciones médicas (ISM).
-CONEXIONES
-Pistas conductoras impresas, estas se imprimen pistas de oro/plata directamente sobre el stent. Por lo tanto, van a conectar la bobina con los electrodos interdigitados del sensor.
+4. Conexiones
+- Tipo: Pistas conductoras impresas directamente sobre el stent
+- Material: Oro
+- Recubrimiento: Poliimida
+- Espesor total de las conexiones: 1 μm
 
 
 
