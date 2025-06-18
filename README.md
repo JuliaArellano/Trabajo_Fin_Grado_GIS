@@ -1,6 +1,6 @@
 # Estudio de Viabilidad y Diseño Conceptual de un Stent Arterial Inteligente con regulación basada en sensores. <img src='imag/universidad_burgos.jpg' align="right" height="120" />
 **Autora:** Julia Arellano Atienza  
-**Tutor:** Guirguis Zaki Guirguis Abdelmessih
+**Tutor:** Guirguis Zaki Guirguis Abdelmessih  
 **Grado en Ingeniería de la Salud**  
 **Universidad de Burgos** 
 
