@@ -22,4 +22,14 @@ El presente proyecto tiene como objetivo el diseño conceptual de un stent intel
 El proyecto incluye el diseño y evaluación del prototipo conceptual mediante análisis bibliográfico y modelado matemático, buscando su viabilidad funcional y su posible aplicación clínica futura.
 
 ---
-## Resultados 
+## Resultados
+
+A continuación se muestra el diseño 3D del stent inteligente desarrollado:
+
+![Modelo 3D del Stent Inteligente](imag/Stent_final.png)  
+*Figura 1. Vista del stent inteligente.*
+
+También se ha implementado una aplicación interactiva que permite visualizar el stent, simular su comportamiento ante distintas condiciones y analizar los parámetros del sistema:
+
+🔗 [Haz clic aquí para acceder a la aplicación]([https://nombre-de-tu-app.streamlit.app](https://tfg-gis-stent-inteligente.streamlit.app/)
+
