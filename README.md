@@ -31,5 +31,5 @@ A continuación se muestra el diseño 3D del stent inteligente desarrollado:
 
 También se ha implementado una aplicación interactiva que permite visualizar el stent, simular su comportamiento ante distintas condiciones y analizar los parámetros del sistema:
 
-🔗 [Haz clic aquí para acceder a la aplicación]([https://nombre-de-tu-app.streamlit.app](https://tfg-gis-stent-inteligente.streamlit.app/])
+🔗 [Haz clic aquí para acceder a la aplicación]([https://tfg-gis-stent-inteligente.streamlit.app/])
 
