@@ -445,7 +445,7 @@ Este modelo estima el cambio de tamaño del material en función de la temperatu
     with col1:
         st.subheader("Parámetros de Entrada")
         tipo = st.selectbox("Tipo de medida", ["diámetro", "longitud"])
-        D_inicial = st.number_input("Valor inicial (mm)", value=1.8 if tipo == "diámetro" else 10.4)
+        D_inicial = st.number_input("Valor inicial (mm)", value=1.8 if tipo == "diámetro" else 10)
         T_min = st.slider("Temperatura mínima (°C)", 0, 37, 18)
         T_max = st.slider("Temperatura máxima (°C)", 37, 80, 50)
         As = st.number_input("As (°C)", value=24.000)
