@@ -33,3 +33,5 @@ También se ha implementado una aplicación interactiva que permite visualizar e
 
 🔗 [Haz clic aquí para acceder a la aplicación](https://tfg-gis-stent-inteligente.streamlit.app/)
 
+![Aplicación](imag/qr.png)  
+*Figura 2. QR de la aplicación.*
